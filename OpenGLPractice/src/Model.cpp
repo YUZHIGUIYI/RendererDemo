@@ -1,5 +1,5 @@
 #include "Model.h"
-#include <iostream>
+#include "Log.h"
 #include <stb_image/stb_image.h>
 
 Model::Model(const std::string& path, bool gamma)
@@ -8,7 +8,15 @@ Model::Model(const std::string& path, bool gamma)
 	loadModel(path);
 }
 
-void Model::Draw(Shader& shader)
+Model::~Model()
+{
+	for (size_t i = 0; i < meshes.size(); ++i)
+	{
+		meshes[i].FreeMeshBuffer();
+	}
+}
+
+void Model::Draw(Renderer::Shader& shader)
 {
 	for (size_t i = 0; i < meshes.size(); ++i)
 	{
@@ -24,11 +32,11 @@ void Model::loadModel(const std::string& path)
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
+		RD_ERROR("Assimp load model error: {0}", importer.GetErrorString());
 		return;
 	}
 	directory = path.substr(0, path.find_last_of('/'));
-	std::cout << directory << std::endl;
+	RD_INFO("Model file path: {0}", directory);
 	processNode(scene->mRootNode, scene);
 }
 
@@ -143,7 +151,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
 		{
 			textures.push_back(textures_map[loadedStr]);
 			skip = true;
-			std::cout << "Already exists!" << std::endl;
+			RD_WARN("Already exists: {0}", loadedStr);
 		}
 		/*for (unsigned int j = 0; j < textures_loaded.size(); ++j)
 		{
@@ -163,7 +171,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
 			textures.push_back(texture);
 			/*textures_loaded.push_back(texture);*/
 			textures_map[loadedStr] = texture;
-			std::cout << typeName << std::endl;
+			RD_INFO("Load texture: {0}", typeName);
 		}
 	}
 	return textures;
@@ -178,6 +186,8 @@ unsigned int Model::TextureFromFile(const std::string& path, const std::string& 
 	glGenTextures(1, &textureID);
 
 	int width, height, nrComponents;
+	// 在y轴上翻转加载的纹理
+	stbi_set_flip_vertically_on_load(true);
 	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
 	if (data)
 	{
@@ -198,7 +208,7 @@ unsigned int Model::TextureFromFile(const std::string& path, const std::string& 
 	}
 	else
 	{
-		std::cout << "Texture failed to load at path: " << path << std::endl;
+		RD_ERROR("Texure failed to load at path: {0}", path);
 	}
 	return textureID;
 }

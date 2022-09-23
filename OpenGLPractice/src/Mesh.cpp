@@ -1,4 +1,5 @@
 #include "Mesh.h"
+#include "Log.h"
 
 Mesh::Mesh(const std::vector<Vertex>& verticesIn, const std::vector<unsigned int>& indicesIn, 
 	const std::vector<Texture>& texturesIn)
@@ -7,7 +8,20 @@ Mesh::Mesh(const std::vector<Vertex>& verticesIn, const std::vector<unsigned int
 	setupMesh();
 }
 
-void Mesh::Draw(Shader& shader)
+Mesh::~Mesh()
+{
+}
+
+void Mesh::FreeMeshBuffer()
+{
+	// 释放顶点数组对象、顶点缓冲对象、索引缓冲对象
+	RD_INFO("Mesh object free render buffer");
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &IBO);
+}
+
+void Mesh::Draw(Renderer::Shader& shader)
 {
 	// bind appropriate textures
 	unsigned int diffuseNr = 1;

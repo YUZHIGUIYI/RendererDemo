@@ -48,8 +48,11 @@ private:
 public:
 	Mesh(const std::vector<Vertex>& verticesIn, const std::vector<unsigned int>& indicesIn,
 		const std::vector<Texture>& texturesIn);
+	~Mesh();
 
-	void Draw(Shader& shader);
+	void Draw(Renderer::Shader& shader);
+
+	void FreeMeshBuffer();
 
 private:
 

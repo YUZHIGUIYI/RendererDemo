@@ -1,0 +1,4 @@
+
+[submodule "OpenGLPractice/src/vendor/spdlog"]
+	path = OpenGLPractice/src/vendor/spdlog
+	url = https://github.com/gabime/spdlog.git

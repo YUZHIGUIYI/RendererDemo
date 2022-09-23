@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src;src\vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLAD\include;$(SolutionDir)Dependencies\ASSIMP;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;src\vendor;src\vendor\spdlog\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLAD\include;$(SolutionDir)Dependencies\ASSIMP;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
@@ -124,7 +124,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src;src\vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLAD\include;$(SolutionDir)Dependencies\ASSIMP;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;src\vendor;src\vendor\spdlog\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLAD\include;$(SolutionDir)Dependencies\ASSIMP;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
@@ -142,17 +142,57 @@
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\samples\SampleBlending.cpp" />
+    <ClCompile Include="src\samples\SampleBlendingWindow.cpp" />
+    <ClCompile Include="src\samples\SampleClearColor.cpp" />
+    <ClCompile Include="src\samples\SampleFaceCulling.cpp" />
+    <ClCompile Include="src\samples\SampleFrameBuffers.cpp" />
+    <ClCompile Include="src\samples\SampleRenderModel.cpp" />
+    <ClCompile Include="src\samples\SampleStencil.cpp" />
+    <ClCompile Include="src\windows\ImGuiUIManager.cpp" />
+    <ClCompile Include="src\windows\ImGuiWindowBase.cpp" />
+    <ClCompile Include="src\IndexBuffer.cpp" />
+    <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Model.cpp" />
+    <ClCompile Include="src\Render.cpp" />
+    <ClCompile Include="src\samples\Sample.cpp" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\vendor\glm\detail\glm.cpp" />
+    <ClCompile Include="src\vendor\imgui\imgui.cpp" />
+    <ClCompile Include="src\vendor\imgui\imgui_demo.cpp" />
+    <ClCompile Include="src\vendor\imgui\imgui_draw.cpp" />
+    <ClCompile Include="src\vendor\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\vendor\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\vendor\imgui\imgui_tables.cpp" />
+    <ClCompile Include="src\vendor\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\vendor\stb_image\stb_image.cpp" />
+    <ClCompile Include="src\VertexArray.cpp" />
+    <ClCompile Include="src\VertexBuffer.cpp" />
+    <ClCompile Include="src\windows\RenderWindow.cpp" />
+    <ClCompile Include="src\windows\SampleMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="res\shaders\blending\BlendingWindow.frag" />
     <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\samples\SampleBlending.h" />
+    <ClInclude Include="src\samples\SampleBlendingWindow.h" />
+    <ClInclude Include="src\samples\SampleClearColor.h" />
+    <ClInclude Include="src\samples\SampleFrameBuffers.h" />
+    <ClInclude Include="src\samples\SampleRenderModel.h" />
+    <ClInclude Include="src\samples\SampleStencil.h" />
+    <ClInclude Include="src\samples\SampleFaceCulling.h" />
+    <ClInclude Include="src\windows\ImGuiUIManager.h" />
+    <ClInclude Include="src\windows\ImGuiWindowBase.h" />
+    <ClInclude Include="src\IndexBuffer.h" />
+    <ClInclude Include="src\Log.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Model.h" />
+    <ClInclude Include="src\Render.h" />
+    <ClInclude Include="src\samples\Sample.h" />
     <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\vendor\glm\common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_vector_relational.hpp" />
@@ -439,17 +479,37 @@
     <ClInclude Include="src\vendor\glm\vec3.hpp" />
     <ClInclude Include="src\vendor\glm\vec4.hpp" />
     <ClInclude Include="src\vendor\glm\vector_relational.hpp" />
+    <ClInclude Include="src\vendor\imgui\imconfig.h" />
+    <ClInclude Include="src\vendor\imgui\imgui.h" />
+    <ClInclude Include="src\vendor\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="src\vendor\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\vendor\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="src\vendor\imgui\imgui_internal.h" />
+    <ClInclude Include="src\vendor\imgui\imstb_rectpack.h" />
+    <ClInclude Include="src\vendor\imgui\imstb_textedit.h" />
+    <ClInclude Include="src\vendor\imgui\imstb_truetype.h" />
     <ClInclude Include="src\vendor\stb_image\stb_image.h" />
+    <ClInclude Include="src\VertexArray.h" />
+    <ClInclude Include="src\VertexBuffer.h" />
+    <ClInclude Include="src\VertexBufferLayout.h" />
+    <ClInclude Include="src\windows\RenderWindow.h" />
+    <ClInclude Include="src\windows\SampleMenu.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.frag" />
     <None Include="res\shaders\Basic.vert" />
+    <None Include="res\shaders\blending\Blending.frag" />
+    <None Include="res\shaders\blending\Blending.vert" />
     <None Include="res\shaders\CastLight.frag" />
     <None Include="res\shaders\CastLight.vert" />
     <None Include="res\shaders\CastLightView.frag" />
     <None Include="res\shaders\CastLightView.vert" />
     <None Include="res\shaders\Flashlight.frag" />
     <None Include="res\shaders\Flashlight.vert" />
+    <None Include="res\shaders\framebuffers\FrameBuffers.frag" />
+    <None Include="res\shaders\framebuffers\FrameBuffers.vert" />
+    <None Include="res\shaders\framebuffers\FrameBuffersScreen.frag" />
+    <None Include="res\shaders\framebuffers\FrameBuffersScreen.vert" />
     <None Include="res\shaders\Light.frag" />
     <None Include="res\shaders\Light.vert" />
     <None Include="res\shaders\Material.frag" />
@@ -458,6 +518,9 @@
     <None Include="res\shaders\MultipleLights.vert" />
     <None Include="res\shaders\Nanosuit.frag" />
     <None Include="res\shaders\Nanosuit.vert" />
+    <None Include="res\shaders\stencil\StencilSingleColor.frag" />
+    <None Include="res\shaders\stencil\StencilTest.frag" />
+    <None Include="res\shaders\stencil\StencilTest.vert" />
     <None Include="src\vendor\glm\detail\func_common.inl" />
     <None Include="src\vendor\glm\detail\func_common_simd.inl" />
     <None Include="src\vendor\glm\detail\func_exponential.inl" />

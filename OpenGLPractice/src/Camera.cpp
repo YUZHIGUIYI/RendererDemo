@@ -28,7 +28,7 @@ Camera::~Camera()
 
 }
 
-glm::mat4 Camera::GetViewMatrix()
+glm::mat4 Camera::GetViewMatrix() const
 {
 	return glm::lookAt(Position, Position + Front, Up);
 }
