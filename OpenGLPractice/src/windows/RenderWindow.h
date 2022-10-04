@@ -34,6 +34,7 @@ private:
 	GLFWwindow* m_Share;
 
 	static double m_Lastx, m_Lasty;
+	static bool m_ShowMouse;
 	static bool m_FirstMouse;
 	static GLenum m_Mode;
 public:

@@ -114,6 +114,108 @@
     <ClCompile Include="src\samples\SampleFrameBuffers.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\samples\SampleSkyBox.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleSkyBoxNanosuit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleAdvancedGLSL.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleGeometryHouse.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleGeometryExplode.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleGeometryNormal.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleInstancing.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleAsteroids.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleMSAA.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleBlinnPhong.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleGammaCorrection.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleShadowMapping.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SamplePointShadows.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleNormalMapping.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleParallaxMapping.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleHDR.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleBloom.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleDeferredShading.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleSSAO.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleLightingTextureded.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleIBLIrradiance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleIBLSpecular.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleIBLSpecularTexture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleTextRendering.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\breakout\Game.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Texture2D.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\breakout\ResourceManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\breakout\SpriteRenderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\breakout\GameObject.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\breakout\GameLevel.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\breakout\BallObjectCollisions.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\breakout\ParticleGenerator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\breakout\PostProcessor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\breakout\TextRenderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader.h">
@@ -1076,6 +1178,111 @@
     <ClInclude Include="src\samples\SampleFrameBuffers.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\samples\SampleSkyBox.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleSkyBoxNanosuit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleAdvancedGLSL.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleGeometryHouse.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleGeometryExplode.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleGeometryNormal.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleInstancing.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleAsteroids.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleMSAA.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleBlinnPhong.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleGammaCorrection.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleShadowMapping.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SamplePointShadows.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleNormalMapping.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleParallaxMapping.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleHDR.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleBloom.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleDeferredShading.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleSSAO.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleLightingTextured.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleIBLIrradiance.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleIBLSpecular.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleIBLSpecularTexture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleTextRendering.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\breakout\Game.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Texture2D.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\breakout\ResourceManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\breakout\SpriteRenderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\breakout\GameObject.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\breakout\GameLevel.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\breakout\BallObjectCollisions.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\breakout\ParticleGenerator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\breakout\PostProcessor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\breakout\PowerUp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\breakout\TextRenderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.vert" />
@@ -1520,5 +1727,118 @@
     <None Include="res\shaders\framebuffers\FrameBuffersScreen.frag" />
     <None Include="res\shaders\framebuffers\FrameBuffers.vert" />
     <None Include="res\shaders\framebuffers\FrameBuffers.frag" />
+    <None Include="res\shaders\skybox\CubeMaps.vert" />
+    <None Include="res\shaders\skybox\CubeMaps.frag" />
+    <None Include="res\shaders\skybox\SkyBox.vert" />
+    <None Include="res\shaders\skybox\SkyBox.frag" />
+    <None Include="res\shaders\skybox\Nanosuit.vert" />
+    <None Include="res\shaders\skybox\Nanosuit.frag" />
+    <None Include="res\shaders\advancedglsl\AdvancedGLSL.vert" />
+    <None Include="res\shaders\advancedglsl\Red.frag" />
+    <None Include="res\shaders\advancedglsl\Green.frag" />
+    <None Include="res\shaders\advancedglsl\Blue.frag" />
+    <None Include="res\shaders\advancedglsl\Yellow.frag" />
+    <None Include="res\shaders\geometry\GeometryHouse.vert" />
+    <None Include="res\shaders\geometry\GeometryHouse.geom" />
+    <None Include="res\shaders\geometry\GeometryHouse.frag" />
+    <None Include="res\shaders\geometry\Explode.vert" />
+    <None Include="res\shaders\geometry\Explode.geom" />
+    <None Include="res\shaders\geometry\Explode.frag" />
+    <None Include="res\shaders\geometry\Default.vert" />
+    <None Include="res\shaders\geometry\Default.frag" />
+    <None Include="res\shaders\geometry\Normal.vert" />
+    <None Include="res\shaders\geometry\Normal.geom" />
+    <None Include="res\shaders\geometry\Normal.frag" />
+    <None Include="res\shaders\instances\Instancing.vert" />
+    <None Include="res\shaders\instances\Instancing.frag" />
+    <None Include="res\shaders\instances\Asteroids.vert" />
+    <None Include="res\shaders\instances\Asteroids.frag" />
+    <None Include="res\shaders\instances\Planet.vert" />
+    <None Include="res\shaders\instances\Planet.frag" />
+    <None Include="res\shaders\msaa\AntiAliasing.vert" />
+    <None Include="res\shaders\msaa\AntiAliasing.frag" />
+    <None Include="res\shaders\msaa\AAPost.vert" />
+    <None Include="res\shaders\msaa\AAPost.frag" />
+    <None Include="res\shaders\blinnphong\BlinnPhong.vert" />
+    <None Include="res\shaders\blinnphong\BlinnPhong.frag" />
+    <None Include="res\shaders\gammacorrect\GammaCorrect.vert" />
+    <None Include="res\shaders\gammacorrect\GammaCorrect.frag" />
+    <None Include="res\shaders\shadow\ShadowMapping.vert" />
+    <None Include="res\shaders\shadow\ShadowMapping.frag" />
+    <None Include="res\shaders\shadow\ShadowMappingDepth.vert" />
+    <None Include="res\shaders\shadow\ShadowMappingDepth.frag" />
+    <None Include="res\shaders\shadow\DebugQuad.vert" />
+    <None Include="res\shaders\shadow\DebugQuad.frag" />
+    <None Include="res\shaders\pointshadows\PointShadows.vert" />
+    <None Include="res\shaders\pointshadows\PointShadows.frag" />
+    <None Include="res\shaders\pointshadows\PointShadowsDepth.vert" />
+    <None Include="res\shaders\pointshadows\PointShadowsDepth.geom" />
+    <None Include="res\shaders\pointshadows\PointShadowsDepth.frag" />
+    <None Include="res\shaders\normalmapping\NormalMapping.vert" />
+    <None Include="res\shaders\normalmapping\NormalMapping.frag" />
+    <None Include="res\shaders\parallaxmapping\ParallaxMapping.vert" />
+    <None Include="res\shaders\parallaxmapping\ParallaxMapping.frag" />
+    <None Include="res\shaders\hdr\Lighting.vert" />
+    <None Include="res\shaders\hdr\Lighting.frag" />
+    <None Include="res\shaders\hdr\HDR.vert" />
+    <None Include="res\shaders\hdr\HDR.frag" />
+    <None Include="res\shaders\bloom\Bloom.vert" />
+    <None Include="res\shaders\bloom\Bloom.frag" />
+    <None Include="res\shaders\bloom\LightBox.frag" />
+    <None Include="res\shaders\bloom\Blur.vert" />
+    <None Include="res\shaders\bloom\Blur.frag" />
+    <None Include="res\shaders\bloom\BloomFinal.vert" />
+    <None Include="res\shaders\bloom\BloomFinal.frag" />
+    <None Include="res\shaders\defer\GBuffer.vert" />
+    <None Include="res\shaders\defer\GBuffer.frag" />
+    <None Include="res\shaders\defer\DeferredShading.vert" />
+    <None Include="res\shaders\defer\DeferredShading.frag" />
+    <None Include="res\shaders\defer\DeferredLightBox.vert" />
+    <None Include="res\shaders\defer\DeferredLightBox.frag" />
+    <None Include="res\shaders\ssao\SSAOGeometry.vert" />
+    <None Include="res\shaders\ssao\SSAOGeometry.frag" />
+    <None Include="res\shaders\ssao\SSAO.vert" />
+    <None Include="res\shaders\ssao\SSAO.frag" />
+    <None Include="res\shaders\ssao\SSAOLighting.frag" />
+    <None Include="res\shaders\ssao\SSAOBlur.frag" />
+    <None Include="res\shaders\pbrlighting\PBR.vert" />
+    <None Include="res\shaders\pbrlighting\PBR.frag" />
+    <None Include="res\shaders\irradiance\CubeMap.vert" />
+    <None Include="res\shaders\irradiance\Equireactangular.frag" />
+    <None Include="res\shaders\irradiance\IrradianceConvolution.frag" />
+    <None Include="res\shaders\irradiance\PBR.vert" />
+    <None Include="res\shaders\irradiance\PBR.frag" />
+    <None Include="res\shaders\irradiance\Background.vert" />
+    <None Include="res\shaders\irradiance\Background.frag" />
+    <None Include="res\shaders\iblspecular\PBR.vert" />
+    <None Include="res\shaders\iblspecular\PBR.frag" />
+    <None Include="res\shaders\iblspecular\CubeMap.vert" />
+    <None Include="res\shaders\iblspecular\Equirectangular.frag" />
+    <None Include="res\shaders\iblspecular\IrradianceConvolution.frag" />
+    <None Include="res\shaders\iblspecular\Prefilter.frag" />
+    <None Include="res\shaders\iblspecular\Brdf.vert" />
+    <None Include="res\shaders\iblspecular\Brdf.frag" />
+    <None Include="res\shaders\iblspecular\Background.vert" />
+    <None Include="res\shaders\iblspecular\Background.frag" />
+    <None Include="res\shaders\ibltexture\Background.frag" />
+    <None Include="res\shaders\ibltexture\Background.vert" />
+    <None Include="res\shaders\ibltexture\Brdf.frag" />
+    <None Include="res\shaders\ibltexture\Brdf.vert" />
+    <None Include="res\shaders\ibltexture\CubeMap.vert" />
+    <None Include="res\shaders\ibltexture\Equirectangular.frag" />
+    <None Include="res\shaders\ibltexture\IrradianceConvolution.frag" />
+    <None Include="res\shaders\ibltexture\PBR.frag" />
+    <None Include="res\shaders\ibltexture\PBR.vert" />
+    <None Include="res\shaders\ibltexture\Prefilter.frag" />
+    <None Include="res\shaders\fboassistant\FBOTexture.vert" />
+    <None Include="res\shaders\fboassistant\FBOTexture.frag" />
+    <None Include="res\shaders\freetype\Text.vert" />
+    <None Include="res\shaders\freetype\Text.frag" />
+    <None Include="res\shaders\breakout\Sprite.vert" />
+    <None Include="res\shaders\breakout\Sprite.frag" />
+    <None Include="res\shaders\breakout\Particle.vert" />
+    <None Include="res\shaders\breakout\Particle.frag" />
+    <None Include="res\shaders\breakout\PostProcessing.vert" />
+    <None Include="res\shaders\breakout\PostProcessing.frag" />
   </ItemGroup>
 </Project>

@@ -6,11 +6,13 @@
 
 namespace Renderer
 {
-	Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
+	Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath,
+		const std::string& geometryPath/* = ""*/)
 		: m_VertexPath(vertexPath), m_FragmentPath(fragmentPath)
 	{
-		ShaderProgramSource source = ParseShader(vertexPath, fragmentPath);
-		m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
+		ShaderProgramSource source = ParseShader(vertexPath, fragmentPath, geometryPath);
+		m_RendererID = CreateShader(source.VertexSource, source.FragmentSource,
+			source.GeometrySource);
 	}
 
 	Shader::~Shader()
@@ -51,6 +53,11 @@ namespace Renderer
 		glUniform4f(GetUniformLocation(name), v0, v1, v2, v3);
 	}
 
+	void Shader::SetUniformVec2f(const std::string& name, const glm::vec2& vec)
+	{
+		glUniform2f(GetUniformLocation(name), vec[0], vec[1]);
+	}
+
 	void Shader::SetUniformVec3f(const std::string& name, const glm::vec3& vec)
 	{
 		glUniform3f(GetUniformLocation(name), vec[0], vec[1], vec[2]);
@@ -82,13 +89,19 @@ namespace Renderer
 		return location;
 	}
 
-	ShaderProgramSource Shader::ParseShader(const std::string& vertexPath, const std::string& fragmentPath)
+	ShaderProgramSource Shader::ParseShader(const std::string& vertexPath, const std::string& fragmentPath,
+		const std::string& geometryPath/* = ""*/)
 	{
 		std::ifstream streamVertex(vertexPath);
 		std::ifstream streamFragment(fragmentPath);
+		std::ifstream streamGeometry;
+		if (geometryPath.size() > 0)
+		{
+			streamGeometry = std::ifstream(geometryPath);
+		}
 
 		std::string line;
-		std::stringstream ss[2];
+		std::stringstream ss[3];
 		while (getline(streamVertex, line))
 		{
 			ss[0] << line << "\n";
@@ -97,8 +110,22 @@ namespace Renderer
 		{
 			ss[1] << line << "\n";
 		}
-
-		return { ss[0].str(), ss[1].str() };  // stringstream转换为string
+		if (geometryPath.size() > 0)
+		{
+			while (getline(streamGeometry, line))
+			{
+				ss[2] << line << "\n";
+			}
+		}
+		
+		if (geometryPath.size() > 0)
+		{
+			return { ss[0].str(), ss[1].str(), ss[2].str() };  // stringstream转换为string
+		}
+		else
+		{
+			return { ss[0].str(), ss[1].str(), "" };
+		}
 	}
 
 	unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
@@ -126,19 +153,33 @@ namespace Renderer
 		return id;
 	}
 
-	unsigned int Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
+	unsigned int Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader,
+		const std::string& geometryShader/* = ""*/)
 	{
 		unsigned int program = glCreateProgram();
 		unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
 		unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
+		unsigned int gs;
+		if (geometryShader.size() > 0)
+		{
+			gs = CompileShader(GL_GEOMETRY_SHADER, geometryShader);
+		}
 
 		glAttachShader(program, vs);
 		glAttachShader(program, fs);
+		if (geometryShader.size() > 0)
+		{
+			glAttachShader(program, gs);
+		}
 		glLinkProgram(program);
 		glValidateProgram(program);
 
 		glDeleteShader(vs);  // 并非删除源码
 		glDeleteShader(fs);  // Detach才是删除，但不推荐，不利于调试
+		if (geometryShader.size() > 0)
+		{
+			glDeleteShader(gs);
+		}
 
 		return program;
 	}

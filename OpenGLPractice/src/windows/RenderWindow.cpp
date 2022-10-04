@@ -4,6 +4,7 @@
 double RenderWindow::m_Lastx;
 double RenderWindow::m_Lasty;
 bool RenderWindow::m_FirstMouse = true;
+bool RenderWindow::m_ShowMouse = true;
 Camera RenderWindow::camera;
 GLenum RenderWindow::m_Mode;
 
@@ -94,6 +95,19 @@ void RenderWindow::ProcessInput()
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			m_Mode = GL_FILL;
+		}
+	}
+	else if (glfwGetKey(m_Window, GLFW_KEY_H) == GLFW_PRESS)
+	{
+		if (m_ShowMouse)
+		{
+			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			m_ShowMouse = false;
+		}
+		else
+		{
+			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			m_ShowMouse = true;
 		}
 	}
 

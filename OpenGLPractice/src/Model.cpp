@@ -48,7 +48,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		meshes.push_back(processMesh(mesh, scene));
 	}
-
+	
 	// 对其子节点重复这一过程
 	for (size_t i = 0; i < node->mNumChildren; ++i)
 	{
@@ -134,6 +134,14 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		"texture_height");
 	textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
+	if (textures.size() > 0)
+	{
+		m_FirstTexture = textures[0];
+	}
+	else
+	{
+		m_FirstTexture = { 0, "", "" };
+	}
 	return Mesh(vertices, indices, textures);
 }
 

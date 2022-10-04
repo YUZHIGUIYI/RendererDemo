@@ -54,6 +54,10 @@ public:
 
 	void FreeMeshBuffer();
 
+	inline unsigned int GetVertexArray() const { return VAO; }
+
+	inline unsigned int GetIndicesSize() const { return static_cast<unsigned int>(indices.size()); }
+
 private:
 
 	void setupMesh();

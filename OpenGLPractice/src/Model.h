@@ -14,7 +14,15 @@ public:
 
 	void Draw(Renderer::Shader& shader);
 
+	inline std::vector<Mesh> GetMeshes() const { return meshes; }
+
+	inline unsigned int GetMeshesSize() const { return meshes.size(); }
+
+	inline unsigned int GetFirstTextureId() const { return m_FirstTexture.id; }
+
 private:
+	// ToDo: have to fix
+	Texture m_FirstTexture;
 	// model data
 	std::vector<Mesh> meshes;
 	std::string directory;
