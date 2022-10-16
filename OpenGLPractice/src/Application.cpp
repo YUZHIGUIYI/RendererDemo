@@ -109,12 +109,10 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		// Start ImGui frame
-		UIManager.Update(RenderWindow::camera);
-		
-		float deltaTime = renderwindow.GetDeltaTime();
+		UIManager.Begin(RenderWindow::camera);
 
 		// ImGui rendering
-		UIManager.Render();
+		UIManager.End();
 
 		renderwindow.RenderWindowSwapBuffers();
 		renderwindow.RenderWindowPollEvents();

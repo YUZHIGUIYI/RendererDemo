@@ -1,10 +1,11 @@
 # RendererDemo
-A Renderer Demo Based On OpenGL
+- A Renderer Demo Based On OpenGL
+- Personal Practice
 # Preview
 - RenderDemo Preview
-![Interface Display](./Preview/RenderDemoPreview.png)
+![Interface Display](./Preview/RenderDemoPreviewRe.png)
 - Model in Sky Box
-![Rendering Imported Model](./Preview/NanoSuitRender.png)
+![Rendering Imported Model](./Preview/NanoSuitInSkyBox.png)
 - Blending Rendering
 ![Blending Rendering](./Preview/BlendingRender.png)
 - Shadow Mapping

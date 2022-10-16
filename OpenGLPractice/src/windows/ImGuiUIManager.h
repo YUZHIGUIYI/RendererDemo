@@ -12,8 +12,8 @@ public:
 	ImGuiUIManager(GLFWwindow* window);
 	~ImGuiUIManager();
 
-	void Update(const Camera& camera);
-	void Render();
+	void Begin(const Camera& camera);
+	void End();
 	void AddWindow(std::unique_ptr<ImGuiWindowBase> newWin);
 
 private:
