@@ -2,6 +2,7 @@
 
 #include <string>
 #include "Camera.h"
+#include "RenderScene.h"
 
 class ImGuiWindowBase
 {
@@ -9,7 +10,7 @@ public:
 	ImGuiWindowBase();
 	virtual ~ImGuiWindowBase() {};
 
-	virtual void Update(const Camera& camera);
+	virtual void Update(const Camera& camera, RenderScene* scenebuffer);
 	virtual void Show();
 
 protected:

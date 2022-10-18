@@ -4,6 +4,7 @@
 #include <vector>
 #include "Camera.h"
 #include "Log.h"
+#include "RenderScene.h"
 
 namespace sample
 {
@@ -14,7 +15,7 @@ namespace sample
 		virtual ~Sample() {}
 
 		virtual void OnUpdate(float deltaTime) {}
-		virtual void OnRender(const Camera& camera) {}
+		virtual void OnRender(const Camera& camera, RenderScene* scenebuffer) {}
 		virtual void OnImGuiRenderer() {}
 	};
 

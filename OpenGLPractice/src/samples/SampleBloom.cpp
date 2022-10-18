@@ -10,7 +10,7 @@ namespace sample
 {
 
 	SampleBloom::SampleBloom()
-		: bloom(true), exposure(1.0f), cubeVAO(0), cubeVBO(0), quadVAO(0), quadVBO(0)
+		: Done(false), bloom(true), exposure(1.0f), cubeVAO(0), cubeVBO(0), quadVAO(0), quadVBO(0)
 	{
 		// build and compile shaders
 		m_Shader = std::make_unique<Renderer::Shader>("res/shaders/bloom/Bloom.vert",
@@ -25,52 +25,12 @@ namespace sample
 		m_TextureWood = std::make_unique<Renderer::Texture>("res/textures/wood.png");
 		m_TextureContainer = std::make_unique<Renderer::Texture>("res/textures/container2.png");
 
-		// configure (floating point) framebuffer
 		glGenFramebuffers(1, &hdrFBO);
-		glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
-		// create 2 floating color buffers (1 for normal rendering, other for brightness threshold values)
 		glGenTextures(2, colorBuffers);
-		for (unsigned int i = 0; i < 2; ++i)
-		{
-			glBindTexture(GL_TEXTURE_2D, colorBuffers[i]);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Width, m_Height, 0, GL_RGBA, GL_FLOAT, NULL);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);  // repeat texture values
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			// attach texture to framebuffer
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, colorBuffers[i], 0);
-		}
-		// create and attach depth buffer (renderbuffer)
 		glGenRenderbuffers(1, &rboDepth);
-		glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_Width, m_Height);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
-		// tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
-		attachments[0] = GL_COLOR_ATTACHMENT0;
-		attachments[1] = GL_COLOR_ATTACHMENT1;
-		glDrawBuffers(2, attachments);
-		// finally check if framebuffer is complete
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			RD_ERROR("FrameBuffer not complete");
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		// ping-pong-framebuffer for blurring
 		glGenFramebuffers(2, pingpongFBO);
 		glGenTextures(2, pingpongColorbuffers);
-		for (unsigned int i = 0; i < 2; ++i)
-		{
-			glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[i]);
-			glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[i]);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Width, m_Height, 0, GL_RGBA, GL_FLOAT, NULL);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pingpongColorbuffers[i], 0);
-			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-				RD_ERROR("FrameBuffer not complete");
-		}
 
 		// lighting info - positions
 		lightPositions.reserve(5);
@@ -117,8 +77,13 @@ namespace sample
 
 	}
 
-	void SampleBloom::OnRender(const Camera& camera)
+	void SampleBloom::OnRender(const Camera& camera, RenderScene* scenebuffer)
 	{
+		if (!Done || scenebuffer->HasChanged())
+		{
+			Init(scenebuffer);
+		}
+
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -212,6 +177,9 @@ namespace sample
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		// 3. now render floating point color buffer to 2D quad and tonemap HDR colors to default framebuffer's (clamped) color range
+
+		scenebuffer->Bind();
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		m_ShaderBloomFinal->Bind();
 		glActiveTexture(GL_TEXTURE0);
@@ -221,6 +189,13 @@ namespace sample
 		m_ShaderBloomFinal->SetUniform1i("bloom", bloom);
 		m_ShaderBloomFinal->SetUniform1f("exposure", exposure);
 		renderQuad();
+
+		// #TODO: Fix me
+		/*glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, scenebuffer->GetFrameBuffer());
+		glBlitFramebuffer(0, 0, m_Width, m_Height, 0, 0, m_Width, m_Height,
+			GL_COLOR_BUFFER_BIT, GL_NEAREST);*/
+		scenebuffer->Unbind();
 	}
 
 	void SampleBloom::OnImGuiRenderer()
@@ -228,6 +203,58 @@ namespace sample
 		ImGui::TextColored(ImVec4(0.4f, 0.6f, 0.8f, 1.0f), "Bloom with HDR");
 		ImGui::Checkbox("Enable Bloom", &bloom);
 		ImGui::SliderFloat("Exposure", &exposure, 1.0f, 50.0f);
+	}
+
+	void SampleBloom::Init(RenderScene* scenebuffer)
+	{
+		m_Width = scenebuffer->GetWidth();
+		m_Height = scenebuffer->GetHeight();
+		Done = true;
+
+		RD_WARN("Reinitialize");
+
+		// configure (floating point) framebuffer
+		glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
+		// create 2 floating color buffers (1 for normal rendering, other for brightness threshold values)
+		for (unsigned int i = 0; i < 2; ++i)
+		{
+			glBindTexture(GL_TEXTURE_2D, colorBuffers[i]);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Width, m_Height, 0, GL_RGBA, GL_FLOAT, NULL);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);  // repeat texture values
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			// attach texture to framebuffer
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, colorBuffers[i], 0);
+		}
+		// create and attach depth buffer (renderbuffer)
+		glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_Width, m_Height);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+		// tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
+		attachments[0] = GL_COLOR_ATTACHMENT0;
+		attachments[1] = GL_COLOR_ATTACHMENT1;
+		glDrawBuffers(2, attachments);
+		// finally check if framebuffer is complete
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			RD_ERROR("FrameBuffer not complete");
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		// ping-pong-framebuffer for blurring
+		for (unsigned int i = 0; i < 2; ++i)
+		{
+			glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[i]);
+			glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[i]);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Width, m_Height, 0, GL_RGBA, GL_FLOAT, NULL);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pingpongColorbuffers[i], 0);
+			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+				RD_ERROR("FrameBuffer not complete");
+		}
+
 	}
 
 	void SampleBloom::renderCube()

@@ -17,14 +17,18 @@ namespace sample
 		~SampleIBLIrradiance();
 
 		void OnUpdate(float deltaTime) override;
-		void OnRender(const Camera& camera) override;
+		void OnRender(const Camera& camera, RenderScene* scenebuffer) override;
 		void OnImGuiRenderer() override;
+
+		void Init(RenderScene* scenebuffer);
 
 	private:
 		void renderSphere();
 		void renderCube();
 
 	private:
+		bool Done;
+
 		unsigned int cubeVAO, cubeVBO;
 		unsigned int sphereVAO, indexCount;
 

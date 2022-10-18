@@ -8,29 +8,12 @@ namespace sample
 {
 
 	SamplePointShadows::SamplePointShadows()
-		: lightPos(0.0f, 0.0f, 0.0f), cubeVAO(0), cubeVBO(0), shadows(true)
+		: lightPos(0.0f, 0.0f, 0.0f), cubeVAO(0), cubeVBO(0), shadows(true), Done(false)
 	{
 		// configure depth map FBO
 		glGenFramebuffers(1, &depthMapFBO);
 		// create depth cubemap texture
 		glGenTextures(1, &depthCubemap);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
-		for (unsigned int i = 0; i < 6; ++i)
-		{
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, m_ShadowWidth, m_ShadowHeight,
-				0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-		}
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-		// attach depth texture as FBO's depth buffer
-		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemap, 0);
-		glDrawBuffer(GL_NONE);
-		glReadBuffer(GL_NONE);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		
 		// load texture
 		m_TextureWood = std::make_unique<Renderer::Texture>("res/textures/wood.png");
@@ -60,8 +43,13 @@ namespace sample
 
 	}
 
-	void SamplePointShadows::OnRender(const Camera& camera)
+	void SamplePointShadows::OnRender(const Camera& camera, RenderScene* scenebuffer)
 	{
+		if (!Done || scenebuffer->HasChanged())
+		{
+			Init(scenebuffer);
+		}
+
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -97,7 +85,9 @@ namespace sample
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		// 2. render scene as normal 
-		// -------------------------
+		// write into post processing framebuffer
+		scenebuffer->Bind();
+
 		glViewport(0, 0, m_Width, m_Height);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		m_Shader->Bind();
@@ -115,12 +105,40 @@ namespace sample
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
 		renderScene(*m_Shader);
+
+		scenebuffer->Unbind();
 	}
 
 	void SamplePointShadows::OnImGuiRenderer()
 	{
 		ImGui::Checkbox("Enable Shadow Mapping", &shadows);
 		ImGui::TextColored(ImVec4(0.4f, 0.6f, 0.7f, 1.0f), "Points Shadow Mapping With PCF");
+	}
+
+	void SamplePointShadows::Init(RenderScene* scenebuffer)
+	{
+		m_Width = scenebuffer->GetWidth();
+		m_Height = scenebuffer->GetHeight();
+		Done = true;
+
+		// configure depth map FBO
+		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
+		for (unsigned int i = 0; i < 6; ++i)
+		{
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, m_ShadowWidth, m_ShadowHeight,
+				0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		}
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		// attach depth texture as FBO's depth buffer
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemap, 0);
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
 	void SamplePointShadows::renderScene(Renderer::Shader& shader)

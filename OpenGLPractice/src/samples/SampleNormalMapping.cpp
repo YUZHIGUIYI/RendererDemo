@@ -34,7 +34,7 @@ namespace sample
 
 	}
 
-	void SampleNormalMapping::OnRender(const Camera& camera)
+	void SampleNormalMapping::OnRender(const Camera& camera, RenderScene* scenebuffer)
 	{
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);

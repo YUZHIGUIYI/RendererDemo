@@ -38,7 +38,7 @@ ImGuiUIManager::~ImGuiUIManager()
 	ImGui::DestroyContext();
 }
 
-void ImGuiUIManager::Begin(const Camera& camera)
+void ImGuiUIManager::Begin(const Camera& camera, RenderScene* scenebuffer)
 {
 	static bool show = true;
 	static bool p_open = true;
@@ -68,7 +68,7 @@ void ImGuiUIManager::Begin(const Camera& camera)
 	ImGui::ShowDemoWindow(&show);
 
 	// Show Windows component
-	UpdateWindows(camera);
+	UpdateWindows(camera, scenebuffer);
 }
 
 void ImGuiUIManager::End()
@@ -105,12 +105,31 @@ void ImGuiUIManager::SetStyle()
 	
 }
 
-void ImGuiUIManager::UpdateWindows(const Camera& camera)
+void ImGuiUIManager::UpdateWindows(const Camera& camera, RenderScene* scenebuffer)
 {
+	static bool sceneshow = true;
+	//scenebuffer->Bind();
+
 	for (size_t i = 0; i < m_Windows.size(); ++i)
 	{
-		m_Windows[i]->Update(camera);
+		m_Windows[i]->Update(camera, scenebuffer);
 	}
+
+	ImGui::Begin("Scene", &sceneshow);
+	{
+		//ImGui::BeginChild("Render");
+		//float width = ImGui::GetContentRegionAvail().x;
+		//float height = ImGui::GetContentRegionAvail().y;
+
+		ImGui::Image((ImTextureID)scenebuffer->GetFrameTexture(),
+			ImGui::GetContentRegionAvail(),
+			ImVec2(0, 1),
+			ImVec2(1, 0));
+		//ImGui::EndChild();
+	}
+	ImGui::End();
+
+	//scenebuffer->Unbind();
 }
 
 void ImGuiUIManager::DeleteWindows()

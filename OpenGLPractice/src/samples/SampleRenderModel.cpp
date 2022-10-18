@@ -46,8 +46,10 @@ namespace sample
 
 	}
 
-	void SampleRenderModel::OnRender(const Camera& camera)
+	void SampleRenderModel::OnRender(const Camera& camera, RenderScene* scenebuffer)
 	{
+		scenebuffer->Bind();
+
 		// 清除颜色缓冲 | 深度缓冲
 		glClearColor(m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], m_ClearColor[3]);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -65,6 +67,8 @@ namespace sample
 		m_Shader->SetUniformMat4f("model", 1, model);
 		m_Shader->SetUniformVec3f("viewPos", camera.GetPosition());
 		m_Model->Draw(*m_Shader);
+
+		scenebuffer->Unbind();
 	}
 
 	void SampleRenderModel::OnImGuiRenderer()

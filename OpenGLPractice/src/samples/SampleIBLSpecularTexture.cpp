@@ -12,7 +12,7 @@ namespace sample
 
 	SampleIBLSpecularTexture::SampleIBLSpecularTexture()
 		: cubeVAO(0), cubeVBO(0), quadVAO(0), quadVBO(0), sphereVAO(0), indexCount(0),
-		nrRows(7), nrColumns(7), spacing(2.5f), maxMipLevels(5)
+		nrRows(7), nrColumns(7), spacing(2.5f), maxMipLevels(5), Done(false)
 	{
 		// configure OpenGL state
 		// set depth function to less than AND equal for skybox depth trick.
@@ -342,10 +342,16 @@ namespace sample
 
 	}
 
-	void SampleIBLSpecularTexture::OnRender(const Camera& camera)
+	void SampleIBLSpecularTexture::OnRender(const Camera& camera, RenderScene* scenebuffer)
 	{
+		if (!Done || scenebuffer->HasChanged())
+		{
+			Init(scenebuffer);
+		}
 		// render
-		// ------
+		// write into post processing framebuffer
+		scenebuffer->Bind();
+
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -484,11 +490,22 @@ namespace sample
 		//brdfShader.Use();
 		//renderQuad();
 
+		scenebuffer->Unbind();
+
 	}
 
 	void SampleIBLSpecularTexture::OnImGuiRenderer()
 	{
 		ImGui::TextColored(ImVec4(0.9f, 0.3f, 0.7f, 1.0f), "IBL Specular Texture");
+	}
+
+	void SampleIBLSpecularTexture::Init(RenderScene* scenebuffer)
+	{
+		m_Width = scenebuffer->GetWidth();
+		m_Height = scenebuffer->GetHeight();
+		Done = true;
+
+		glViewport(0, 0, m_Width, m_Height);
 	}
 
 	void SampleIBLSpecularTexture::renderSphere()

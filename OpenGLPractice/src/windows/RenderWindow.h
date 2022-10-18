@@ -3,7 +3,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <string>
+#include <memory>
 #include "Camera.h"
+#include "RenderScene.h"
 
 class RenderWindow
 {
@@ -18,9 +20,11 @@ public:
 	GLFWwindow* GetGLFWwindow();
 	void ProcessInput();
 
+	RenderScene* GetSceneBuffer() const { return SceneBuffer.get(); };
+
 private:
-	static void render_window_init(int width, int height);
 	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+	static void render_window_init(int width, int height);
 	static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
@@ -39,4 +43,5 @@ private:
 	static GLenum m_Mode;
 public:
 	static Camera camera;
+	static std::unique_ptr<RenderScene> SceneBuffer;
 };

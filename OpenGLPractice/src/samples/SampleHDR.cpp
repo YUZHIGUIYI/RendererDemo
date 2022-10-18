@@ -9,7 +9,7 @@
 namespace sample
 {
 	SampleHDR::SampleHDR()
-		: enableHDR(false), exposure(1.0f), cubeVAO(0), cubeVBO(0),
+		: Done(false), enableHDR(false), exposure(1.0f), cubeVAO(0), cubeVBO(0),
 		quadVAO(0), quadVBO(0)
 	{
 		// build and compile shaders
@@ -19,28 +19,11 @@ namespace sample
 			"res/shaders/hdr/HDR.frag");
 		// load texture
 		m_TextureWood = std::make_unique<Renderer::Texture>("res/textures/wood.png");
-		
-		// configure floating point framebuffer
-		// ------------------------------------
-		glGenFramebuffers(1, &hdrFBO);
-		// create floating point color buffer
-		glGenTextures(1, &colorBuffer);
-		glBindTexture(GL_TEXTURE_2D, colorBuffer);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Width, m_Height, 0, GL_RGBA, GL_FLOAT, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		// create depth buffer (renderbuffer)
-		glGenRenderbuffers(1, &rboDepth);
-		glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_Width, m_Height);
-		// attach buffers
-		glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorBuffer, 0);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
 
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			RD_ERROR("FrameBuffer not complete");
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		// hdr framebuffer
+		glGenFramebuffers(1, &hdrFBO);
+		glGenTextures(1, &colorBuffer);
+		glGenRenderbuffers(1, &rboDepth);
 
 		// light info - positions
 		lightPositions.reserve(5);
@@ -60,6 +43,7 @@ namespace sample
 		m_Shader->SetUniform1i("diffuseTexture", 0);
 		m_ShaderHDR->Bind();
 		m_ShaderHDR->SetUniform1i("hdrBuffer", 0);
+
 	}
 
 	SampleHDR::~SampleHDR()
@@ -77,8 +61,14 @@ namespace sample
 	{
 	}
 
-	void SampleHDR::OnRender(const Camera& camera)
+	void SampleHDR::OnRender(const Camera& camera, RenderScene* scenebuffer)
 	{
+		// Initialize 
+		if (!Done || scenebuffer->HasChanged())
+		{
+			Init(scenebuffer);
+		}
+
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -108,6 +98,10 @@ namespace sample
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		// 2. now render floating point color buffer to 2D quad and tonemap HDR colors to default framebuffer's (clamped) color range
+
+		// write into post processing framebuffer, and then transfer texture id to imgui image
+		scenebuffer->Bind();
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		m_ShaderHDR->Bind();
 		glActiveTexture(GL_TEXTURE0);
@@ -115,6 +109,8 @@ namespace sample
 		m_ShaderHDR->SetUniform1i("hdr", enableHDR);
 		m_ShaderHDR->SetUniform1f("exposure", exposure);
 		renderQuad();
+
+		scenebuffer->Unbind();
 	}
 
 	void SampleHDR::OnImGuiRenderer()
@@ -122,6 +118,34 @@ namespace sample
 		ImGui::TextColored(ImVec4(0.4f, 0.6f, 0.8f, 1.0f), "High Dynamic Range");
 		ImGui::Checkbox("Enable HDR", &enableHDR);
 		ImGui::SliderFloat("Exposure", &exposure, 1.0f, 25.0f);
+	}
+
+	void SampleHDR::Init(RenderScene* scenebuffer)
+	{
+		m_Width = scenebuffer->GetWidth();
+		m_Height = scenebuffer->GetHeight();
+		Done = true;
+
+		RD_WARN("Reinitialize");
+
+		// configure floating point framebuffer
+		// ------------------------------------
+		// create floating point color buffer
+		glBindTexture(GL_TEXTURE_2D, colorBuffer);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Width, m_Height, 0, GL_RGBA, GL_FLOAT, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		// create depth buffer (renderbuffer)
+		glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_Width, m_Height);
+		// attach buffers
+		glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorBuffer, 0);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			RD_ERROR("FrameBuffer not complete");
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
 	void SampleHDR::renderCube()

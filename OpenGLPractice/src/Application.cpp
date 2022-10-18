@@ -41,8 +41,8 @@
 
 #include "Log.h"
 
-const unsigned int WIDTH = 800;
-const unsigned int HEIGHT = 600;
+const unsigned int WIDTH = 1600;
+const unsigned int HEIGHT = 1200;
 
 int main()
 {
@@ -108,10 +108,10 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-		// Start ImGui frame
-		UIManager.Begin(RenderWindow::camera);
+		// Start ImGui frame rendering
+		UIManager.Begin(RenderWindow::camera, renderwindow.GetSceneBuffer());
 
-		// ImGui rendering
+		// End ImGui rendering
 		UIManager.End();
 
 		renderwindow.RenderWindowSwapBuffers();

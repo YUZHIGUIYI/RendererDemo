@@ -115,7 +115,7 @@ namespace sample
 
 	}
 
-	void SampleTextRendering::OnRender(const Camera& camera)
+	void SampleTextRendering::OnRender(const Camera& camera, RenderScene* scenebuffer)
 	{
 		// render
 		// ------

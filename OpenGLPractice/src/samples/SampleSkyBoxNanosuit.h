@@ -17,13 +17,17 @@ namespace sample
 		~SampleSkyBoxNanosuit();
 
 		void OnUpdate(float deltaTime) override;
-		void OnRender(const Camera& camera) override;
+		void OnRender(const Camera& camera, RenderScene* scenebuffer) override;
 		void OnImGuiRenderer() override;
+
+		void Init(RenderScene* scenebuffer);
 
 	private:
 		unsigned int LoadCubeMap();
 
 	private:
+		bool Done;
+
 		unsigned int skyboxVAO, skyboxVBO;
 
 		unsigned int m_CubeMapID;

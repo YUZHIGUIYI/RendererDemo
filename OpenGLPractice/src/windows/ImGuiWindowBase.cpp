@@ -8,7 +8,7 @@ ImGuiWindowBase::ImGuiWindowBase()
 {
 }
 
-void ImGuiWindowBase::Update(const Camera& camera)
+void ImGuiWindowBase::Update(const Camera& camera, RenderScene* scenebuffer)
 {
 
 }

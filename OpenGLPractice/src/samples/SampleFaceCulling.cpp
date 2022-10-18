@@ -90,7 +90,7 @@ namespace sample
 
 	}
 
-	void SampleFaceCulling::OnRender(const Camera& camera)
+	void SampleFaceCulling::OnRender(const Camera& camera, RenderScene* scenebuffer)
 	{
 		if (FaceCullingMode) glCullFace(GL_BACK);
 		else glCullFace(GL_FRONT);

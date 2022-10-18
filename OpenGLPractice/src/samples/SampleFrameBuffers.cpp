@@ -160,7 +160,7 @@ namespace sample
 
 	}
 
-	void SampleFrameBuffers::OnRender(const Camera& camera)
+	void SampleFrameBuffers::OnRender(const Camera& camera, RenderScene* scenebuffer)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, FrameBuffer);
 		glEnable(GL_DEPTH_TEST);
@@ -195,6 +195,9 @@ namespace sample
 
 		// now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		scenebuffer->Bind();
+
 		glDisable(GL_DEPTH_TEST);  // disable depth test so screen-space isn't discarded due to depth test
 		// clear all relevant buffers
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -205,6 +208,8 @@ namespace sample
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, TexColorBuffer);  // use the color attachment texture as the texture of the quad plane
 		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		scenebuffer->Unbind();
 	}
 
 	void SampleFrameBuffers::OnImGuiRenderer()

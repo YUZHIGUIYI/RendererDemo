@@ -13,7 +13,7 @@ public:
 	SampleMenu(/*sample::Sample*& currentSamplePointer*/);
 	~SampleMenu();
 
-	void Update(const Camera& camera) override;
+	void Update(const Camera& camera, RenderScene* scenebuffer) override;
 
 	// ×¢²á²âÊÔÀà
 	template<class T>

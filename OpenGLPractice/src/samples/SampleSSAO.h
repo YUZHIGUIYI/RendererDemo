@@ -16,8 +16,10 @@ namespace sample
 		~SampleSSAO();
 
 		void OnUpdate(float deltaTime) override;
-		void OnRender(const Camera& camera) override;
+		void OnRender(const Camera& camera, RenderScene* scenebuffer) override;
 		void OnImGuiRenderer() override;
+
+		void Init(RenderScene* scenebuffer);
 
 	private:
 		void renderQuad();
@@ -25,6 +27,8 @@ namespace sample
 		float lerp(float a, float b, float f);
 
 	private:
+		bool Done;
+
 		unsigned int cubeVAO, cubeVBO;
 		unsigned int quadVAO, quadVBO;
 

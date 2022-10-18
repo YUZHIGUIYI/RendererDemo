@@ -216,6 +216,9 @@
     <ClCompile Include="src\breakout\TextRenderer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\RenderScene.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader.h">
@@ -1281,6 +1284,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\breakout\TextRenderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RenderScene.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

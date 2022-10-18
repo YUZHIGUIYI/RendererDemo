@@ -91,8 +91,10 @@ namespace sample
 		
 	}
 
-	void SampleAsteroids::OnRender(const Camera& camera)
+	void SampleAsteroids::OnRender(const Camera& camera, RenderScene* scenebuffer)
 	{
+		scenebuffer->Bind();
+
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -127,6 +129,8 @@ namespace sample
 			glDrawElementsInstanced(GL_TRIANGLES, Meshes[i].GetIndicesSize(), GL_UNSIGNED_INT, 0, amount);
 			glBindVertexArray(0);
 		}
+
+		scenebuffer->Unbind();
 	}
 
 	void SampleAsteroids::OnImGuiRenderer()

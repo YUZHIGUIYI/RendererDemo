@@ -16,8 +16,10 @@ namespace sample
 		~SampleBloom();
 
 		void OnUpdate(float deltaTime) override;
-		void OnRender(const Camera& camera) override;
+		void OnRender(const Camera& camera, RenderScene* scenebuffer) override;
 		void OnImGuiRenderer() override;
+
+		void Init(RenderScene* scenebuffer);
 
 	private:
 		void renderCube();
@@ -34,6 +36,7 @@ namespace sample
 		unsigned int pingpongFBO[2];
 		unsigned int pingpongColorbuffers[2];
 
+		bool Done;
 		bool bloom;
 		float exposure;
 

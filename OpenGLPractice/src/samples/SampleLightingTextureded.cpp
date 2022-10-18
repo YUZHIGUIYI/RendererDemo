@@ -46,7 +46,7 @@ namespace sample
 
 	}
 
-	void SampleLightingTextured::OnRender(const Camera& camera)
+	void SampleLightingTextured::OnRender(const Camera& camera, RenderScene* scenebuffer)
 	{
 		glViewport(0, 0, m_Width, m_Height);
 

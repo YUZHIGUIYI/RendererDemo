@@ -6,7 +6,10 @@ double RenderWindow::m_Lasty;
 bool RenderWindow::m_FirstMouse = true;
 bool RenderWindow::m_ShowMouse = true;
 Camera RenderWindow::camera;
+std::unique_ptr<RenderScene> RenderWindow::SceneBuffer;
+
 GLenum RenderWindow::m_Mode;
+
 
 RenderWindow::RenderWindow(int width, int height, const char* title, 
 	GLFWmonitor* monitor /*= nullptr*/, GLFWwindow* share /*= nullptr*/)
@@ -133,11 +136,13 @@ void RenderWindow::render_window_init(int width, int height)
 	m_Lastx = static_cast<double>(width / 2.0);
 	m_Lasty = static_cast<double>(height / 2.0);
 	m_FirstMouse = true;
+	SceneBuffer = std::make_unique<RenderScene>(width, height);
 }
 
 void RenderWindow::framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
+	SceneBuffer->RescaleFrameBuffer(width, height);
 }
 
 void RenderWindow::mouse_callback(GLFWwindow* window, double xpos, double ypos)

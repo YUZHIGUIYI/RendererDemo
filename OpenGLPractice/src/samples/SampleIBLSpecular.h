@@ -16,8 +16,10 @@ namespace sample
 		~SampleIBLSpecular();
 
 		void OnUpdate(float deltaTime) override;
-		void OnRender(const Camera& camera) override;
+		void OnRender(const Camera& camera, RenderScene* scenebuffer) override;
 		void OnImGuiRenderer() override;
+
+		void Init(RenderScene* scenebuffer);
 
 	private:
 		void renderSphere();
@@ -25,6 +27,8 @@ namespace sample
 		void renderQuad();
 
 	private:
+		bool Done;
+
 		unsigned int sphereVAO, indexCount;
 		unsigned int cubeVAO, cubeVBO;
 		unsigned int quadVAO, quadVBO;

@@ -110,7 +110,7 @@ namespace sample
 
 	}
 
-	void SampleAdvancedGLSL::OnRender(const Camera& camera)
+	void SampleAdvancedGLSL::OnRender(const Camera& camera, RenderScene* scenebuffer)
 	{
 		glClearColor(m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], m_ClearColor[3]);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);

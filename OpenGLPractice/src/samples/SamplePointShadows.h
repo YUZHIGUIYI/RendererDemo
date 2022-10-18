@@ -15,8 +15,10 @@ namespace sample
 		~SamplePointShadows();
 
 		void OnUpdate(float deltaTime) override;
-		void OnRender(const Camera& camera) override;
+		void OnRender(const Camera& camera, RenderScene* scenebuffer) override;
 		void OnImGuiRenderer() override;
+
+		void Init(RenderScene* scenebuffer);
 
 	private:
 		void renderScene(Renderer::Shader& shader);
@@ -32,6 +34,7 @@ namespace sample
 		unsigned int depthMapFBO;
 		unsigned int depthCubemap;
 
+		bool Done;
 		bool shadows;
 
 		glm::vec3 lightPos;

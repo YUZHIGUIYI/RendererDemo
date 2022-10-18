@@ -10,6 +10,7 @@ namespace sample
 {
 
 	SampleSkyBoxNanosuit::SampleSkyBoxNanosuit()
+		: Done(false)
 	{
 		// model
 		m_Model = std::make_unique<Model>("res/models/nanosuit_reflection/nanosuit.obj");
@@ -120,8 +121,15 @@ namespace sample
 
 	}
 
-	void SampleSkyBoxNanosuit::OnRender(const Camera& camera)
+	void SampleSkyBoxNanosuit::OnRender(const Camera& camera, RenderScene* scenebuffer)
 	{
+		if (!Done || scenebuffer->HasChanged())
+		{
+			Init(scenebuffer);
+		}
+		// write into post processing framebuffer, and then transfer texture id to imgui image
+		scenebuffer->Bind();
+
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -154,12 +162,21 @@ namespace sample
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
 		glDepthFunc(GL_LESS);
+
+		scenebuffer->Unbind();
 	}
 
 	void SampleSkyBoxNanosuit::OnImGuiRenderer()
 	{
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
 			ImGui::GetIO().Framerate);
+	}
+
+	void SampleSkyBoxNanosuit::Init(RenderScene* scenebuffer)
+	{
+		m_Width = scenebuffer->GetWidth();
+		m_Height = scenebuffer->GetHeight();
+		Done = true;
 	}
 
 	unsigned int SampleSkyBoxNanosuit::LoadCubeMap()

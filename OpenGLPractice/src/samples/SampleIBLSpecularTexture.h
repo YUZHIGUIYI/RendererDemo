@@ -16,8 +16,10 @@ namespace sample
 		~SampleIBLSpecularTexture();
 
 		void OnUpdate(float deltaTime) override;
-		void OnRender(const Camera& camera) override;
+		void OnRender(const Camera& camera, RenderScene* scenebuffer) override;
 		void OnImGuiRenderer() override;
+
+		void Init(RenderScene* scenebuffer);
 
 	private:
 		void renderSphere();
@@ -26,6 +28,8 @@ namespace sample
 		unsigned int loadTexture(const char* path);
 
 	private:
+		bool Done;
+
 		unsigned int sphereVAO;
 		unsigned int indexCount;
 		unsigned int cubeVAO, cubeVBO;

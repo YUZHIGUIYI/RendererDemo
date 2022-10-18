@@ -12,7 +12,7 @@ public:
 	ImGuiUIManager(GLFWwindow* window);
 	~ImGuiUIManager();
 
-	void Begin(const Camera& camera);
+	void Begin(const Camera& camera, RenderScene* scenebuffer);
 	void End();
 	void AddWindow(std::unique_ptr<ImGuiWindowBase> newWin);
 
@@ -22,6 +22,6 @@ private:
 private:
 	void ShowDockSpace(bool bopen);
 	void SetStyle();
-	void UpdateWindows(const Camera& camera);
+	void UpdateWindows(const Camera& camera, RenderScene* scenebuffer);
 	void DeleteWindows();
 };

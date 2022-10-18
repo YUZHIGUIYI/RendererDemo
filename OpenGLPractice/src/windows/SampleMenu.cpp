@@ -10,7 +10,7 @@ SampleMenu::~SampleMenu()
 {
 }
 
-void SampleMenu::Update(const Camera& camera)
+void SampleMenu::Update(const Camera& camera, RenderScene* scenebuffer)
 {
 	if (bshow)
 	{
@@ -29,7 +29,7 @@ void SampleMenu::Update(const Camera& camera)
 				}
 				if (m_CurrentSample != nullptr)
 				{
-					m_CurrentSample->OnRender(camera);
+					m_CurrentSample->OnRender(camera, scenebuffer);
 					m_CurrentSample->OnImGuiRenderer();
 				}
 			}

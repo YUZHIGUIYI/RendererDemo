@@ -11,7 +11,7 @@ namespace sample
 		~SampleClearColor();
 
 		void OnUpdate(float deltaTime) override;
-		void OnRender(const Camera& camera) override;
+		void OnRender(const Camera& camera, RenderScene* scenebuffer) override;
 		void OnImGuiRenderer() override;
 
 	private:

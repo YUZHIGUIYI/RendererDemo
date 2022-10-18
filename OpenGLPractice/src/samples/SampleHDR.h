@@ -16,8 +16,10 @@ namespace sample
 		~SampleHDR();
 
 		void OnUpdate(float deltaTime) override;
-		void OnRender(const Camera& camera) override;
+		void OnRender(const Camera& camera, RenderScene* scenebuffer) override;
 		void OnImGuiRenderer() override;
+
+		void Init(RenderScene* scenebuffer);
 
 	private:
 		void renderCube();
@@ -33,6 +35,7 @@ namespace sample
 		unsigned int colorBuffer;
 		unsigned int rboDepth;
 
+		bool Done;
 		bool enableHDR;
 		float exposure;
 

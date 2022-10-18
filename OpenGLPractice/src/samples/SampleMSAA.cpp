@@ -10,7 +10,100 @@ namespace sample
 {
 
 	SampleMSAA::SampleMSAA()
+		: Done(false)
 	{
+	}
+
+	SampleMSAA::~SampleMSAA()
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glEnable(GL_DEPTH_TEST);
+		glDeleteVertexArrays(1, &quadVAO);
+		glDeleteVertexArrays(1, &cubeVAO);
+		glDeleteBuffers(1, &quadVBO);
+		glDeleteBuffers(1, &cubeVBO);
+		glDeleteFramebuffers(1, &framebuffer);
+		glDeleteFramebuffers(1, &intermediateFBO);
+		glDeleteTextures(1, &textureColorBufferMultiSampled);
+		glDeleteTextures(1, &screenTexture);
+		glDeleteRenderbuffers(1, &rbo);
+	}
+
+	void SampleMSAA::OnUpdate(float deltaTime)
+	{
+
+	}
+
+	void SampleMSAA::OnRender(const Camera& camera, RenderScene* scenebuffer)
+	{
+		if (!Done)
+		{
+			Init(scenebuffer);
+		}
+
+		// render
+		// ------
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		// 1. draw scene as normal in multisampled buffers
+		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_DEPTH_TEST);
+
+		// set transformation matrices		
+		m_Shader->Bind();
+		glm::mat4 projection = glm::perspective(glm::radians(camera.GetZoom()), (float)m_Width / (float)m_Height,
+			0.1f, 1000.0f);
+		m_Shader->SetUniformMat4f("projection", 1, projection);
+		m_Shader->SetUniformMat4f("view", 1, camera.GetViewMatrix());
+		m_Shader->SetUniformMat4f("model", 1, glm::mat4(1.0f));
+
+		glBindVertexArray(cubeVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		// 2. now blit multisampled buffer(s) to normal colorbuffer of intermediate FBO
+		// Image is stored in screen Texture
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, intermediateFBO);
+		glBlitFramebuffer(0, 0, m_Width, m_Height, 0, 0, m_Width, m_Height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		
+		// 3. now render quad with scene's visuals as its texture image
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		// write into post processing framebuffer, and then transfer texture id to imgui image
+		// #TODO: in msaa, has bugs have to fix
+
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glDisable(GL_DEPTH_TEST);
+
+		// draw screen quad
+		m_ShaderScreen->Bind();
+		glBindVertexArray(quadVAO);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, screenTexture);  // use the now resolved color attachment as the quad's texture
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		// blit the framebuffer, and then bind the default framebuffer
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, scenebuffer->GetFrameBuffer());
+		glBlitFramebuffer(0, 0, scenebuffer->GetWidth(), scenebuffer->GetHeight(), 0, 0, scenebuffer->GetWidth(), scenebuffer->GetHeight(), 
+			GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		scenebuffer->Unbind();
+	}
+
+	void SampleMSAA::OnImGuiRenderer()
+	{
+		ImGui::Text("Multiple Sampling and Off-screen Rendering");
+	}
+
+	void SampleMSAA::Init(RenderScene* scenebuffer)
+	{
+		m_Width = scenebuffer->GetWidth();
+		m_Height = scenebuffer->GetHeight();
+		Done = true;
 		// set up vertex data
 		float cubeVertices[] = {
 			// positions       
@@ -84,7 +177,7 @@ namespace sample
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-		
+
 		// configure MSAA framebuffer
 		glGenFramebuffers(1, &framebuffer);
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -129,75 +222,6 @@ namespace sample
 		// shader configuration 
 		m_ShaderScreen->Bind();
 		m_ShaderScreen->SetUniform1i("screenTexture", 0);
-	}
-
-	SampleMSAA::~SampleMSAA()
-	{
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glEnable(GL_DEPTH_TEST);
-		glDeleteVertexArrays(1, &quadVAO);
-		glDeleteVertexArrays(1, &cubeVAO);
-		glDeleteBuffers(1, &quadVBO);
-		glDeleteBuffers(1, &cubeVBO);
-		glDeleteFramebuffers(1, &framebuffer);
-		glDeleteFramebuffers(1, &intermediateFBO);
-		glDeleteTextures(1, &textureColorBufferMultiSampled);
-		glDeleteTextures(1, &screenTexture);
-		glDeleteRenderbuffers(1, &rbo);
-	}
-
-	void SampleMSAA::OnUpdate(float deltaTime)
-	{
-
-	}
-
-	void SampleMSAA::OnRender(const Camera& camera)
-	{
-		// render
-		// ------
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		// 1. draw scene as normal in multisampled buffers
-		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glEnable(GL_DEPTH_TEST);
-
-		// set transformation matrices		
-		m_Shader->Bind();
-		glm::mat4 projection = glm::perspective(glm::radians(camera.GetZoom()), (float)m_Width / (float)m_Height, 
-			0.1f, 1000.0f);
-		m_Shader->SetUniformMat4f("projection", 1, projection);
-		m_Shader->SetUniformMat4f("view", 1, camera.GetViewMatrix());
-		m_Shader->SetUniformMat4f("model", 1, glm::mat4(1.0f));
-
-		glBindVertexArray(cubeVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-
-		// 2. now blit multisampled buffer(s) to normal colorbuffer of intermediate FBO
-		// Image is stored in screen Texture
-		glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, intermediateFBO);
-		glBlitFramebuffer(0, 0, m_Width, m_Height, 0, 0, m_Width, m_Height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-		
-		// 3. now render quad with scene's visuals as its texture image
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-		glDisable(GL_DEPTH_TEST);
-
-		// draw screen quad
-		m_ShaderScreen->Bind();
-		glBindVertexArray(quadVAO);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, screenTexture);  // use the now resolved color attachment as the quad's texture
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-	}
-
-	void SampleMSAA::OnImGuiRenderer()
-	{
-		ImGui::Text("Multiple Sampling and Off-screen Rendering");
 	}
 
 	int SampleMSAA::m_Width = 800;

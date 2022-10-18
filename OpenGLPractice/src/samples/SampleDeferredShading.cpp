@@ -116,7 +116,7 @@ namespace sample
 
 	}
 
-	void SampleDeferredShading::OnRender(const Camera& camera)
+	void SampleDeferredShading::OnRender(const Camera& camera, RenderScene* scenebuffer)
 	{
 		// render
 		// ------

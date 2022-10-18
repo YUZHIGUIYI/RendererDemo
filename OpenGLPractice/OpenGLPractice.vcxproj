@@ -152,6 +152,7 @@
     <ClCompile Include="src\breakout\SpriteRenderer.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\RenderScene.cpp" />
     <ClCompile Include="src\samples\SampleAdvancedGLSL.cpp" />
     <ClCompile Include="src\samples\SampleAsteroids.cpp" />
     <ClCompile Include="src\samples\SampleBlending.cpp" />
@@ -221,6 +222,7 @@
     <ClInclude Include="src\breakout\ResourceManager.h" />
     <ClInclude Include="src\breakout\SpriteRenderer.h" />
     <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\RenderScene.h" />
     <ClInclude Include="src\samples\SampleAdvancedGLSL.h" />
     <ClInclude Include="src\samples\SampleAsteroids.h" />
     <ClInclude Include="src\samples\SampleBlending.h" />

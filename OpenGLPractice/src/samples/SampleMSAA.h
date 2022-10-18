@@ -13,10 +13,14 @@ namespace sample
 		~SampleMSAA();
 
 		void OnUpdate(float deltaTime) override;
-		void OnRender(const Camera& camera) override;
+		void OnRender(const Camera& camera, RenderScene* scenebuffer) override;
 		void OnImGuiRenderer() override;
 
+		void Init(RenderScene* scenebuffer);
+
 	private:
+		bool Done;
+
 		std::unique_ptr<Renderer::Shader> m_Shader;
 		std::unique_ptr<Renderer::Shader> m_ShaderScreen;
 

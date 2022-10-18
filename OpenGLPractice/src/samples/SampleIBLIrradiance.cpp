@@ -12,7 +12,7 @@ namespace sample
 
 	SampleIBLIrradiance::SampleIBLIrradiance()
 		: cubeVAO(0), cubeVBO(0), sphereVAO(0), indexCount(0),
-		nrRows(7), nrColumns(7), spacing(2.5)
+		nrRows(7), nrColumns(7), spacing(2.5), Done(false)
 	{
 		// OpenGL state
 		glDepthFunc(GL_LEQUAL);
@@ -52,7 +52,7 @@ namespace sample
 
 		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
 		glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 1024, 1024);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
 
 		// pbr: load the HDR environment map
@@ -82,7 +82,7 @@ namespace sample
 		glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
 		for (unsigned int i = 0; i < 6; ++i)
 		{
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 512, 512, 0, GL_RGB, GL_FLOAT, nullptr);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 1024, 1024, 0, GL_RGB, GL_FLOAT, nullptr);
 		}
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -107,7 +107,7 @@ namespace sample
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, hdrTexture);
 
-		glViewport(0, 0, 512, 512);  // configure the viewport to the capture dimensions
+		glViewport(0, 0, 1024, 1024);  // configure the viewport to the capture dimensions
 		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
 		for (unsigned int i = 0; i < 6; ++i)
 		{
@@ -125,7 +125,7 @@ namespace sample
 		glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
 		for (unsigned int i = 0; i < 6; ++i)
 		{
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 32, 32, 0, GL_RGB, GL_FLOAT, nullptr);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 64, 64, 0, GL_RGB, GL_FLOAT, nullptr);
 		}
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -135,7 +135,7 @@ namespace sample
 
 		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
 		glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 64, 64);
 
 		// pbr: solve diffuse integral by convolution, to create an irradiance (cube)map
 		irradianceShader->Bind();
@@ -144,7 +144,7 @@ namespace sample
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
 		
-		glViewport(0, 0, 32, 32);  // configure the viewport to the capture dimensions
+		glViewport(0, 0, 64, 64);  // configure the viewport to the capture dimensions
 		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
 		for (unsigned int i = 0; i < 6; ++i)
 		{
@@ -162,7 +162,7 @@ namespace sample
 		// then before rendering, configure the viewport to the original framebuffer's screen dimensions
 		//glfwGetFramebufferSize(window, &scrWidth, &scrHeight);
 		//glViewport(0, 0, scrWidth, &scrHeight);
-		glViewport(0, 0, 800, 600);
+		glViewport(0, 0, m_Width, m_Height);
 	}
 
 	SampleIBLIrradiance::~SampleIBLIrradiance()
@@ -186,10 +186,16 @@ namespace sample
 
 	}
 
-	void SampleIBLIrradiance::OnRender(const Camera& camera)
+	void SampleIBLIrradiance::OnRender(const Camera& camera, RenderScene* scenebuffer)
 	{
+		if (!Done || scenebuffer->HasChanged())
+		{
+			Init(scenebuffer);
+		}
 		// render
-		// ------
+		// write into post processing framebuffer
+		scenebuffer->Bind();
+
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -254,11 +260,22 @@ namespace sample
 		glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
 		//glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap); // display irradiance map
 		renderCube();
+
+		scenebuffer->Unbind();
 	}
 
 	void SampleIBLIrradiance::OnImGuiRenderer()
 	{
 		ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.6f, 1.0f), "IBL Irradiance");
+	}
+
+	void SampleIBLIrradiance::Init(RenderScene* scenebuffer)
+	{
+		m_Width = scenebuffer->GetWidth();
+		m_Height = scenebuffer->GetHeight();
+		Done = true;
+
+		glViewport(0, 0, m_Width, m_Height);
 	}
 
 	void SampleIBLIrradiance::renderSphere()
