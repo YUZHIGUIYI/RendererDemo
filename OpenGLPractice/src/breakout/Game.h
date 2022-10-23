@@ -41,8 +41,6 @@ namespace breakout
 	public:
 		// Game state
 		GameState State;
-		bool Keys[1024]; // Also see RenderWindow KeyCallback function
-		bool KeysProcessed[1024];
 		unsigned int Width, Height;
 
 		unsigned int Lives;  // player lives

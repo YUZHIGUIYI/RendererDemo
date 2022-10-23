@@ -5,7 +5,7 @@ namespace breakout
 {
 	unsigned int ParticleGenerator::lastUsedParticle = 0;
 
-	ParticleGenerator::ParticleGenerator(Renderer::Shader shader, Renderer::Texture2D texture, unsigned int amount)
+	ParticleGenerator::ParticleGenerator(Renderer::Shader* shader, Renderer::Texture2D* texture, unsigned int amount)
 		: shader(shader), texture(texture), amount(amount)
 	{
 		init();
@@ -37,14 +37,14 @@ namespace breakout
 	{
 		// use additive blending to give it a 'glow' offset
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-		shader.Bind();
+		shader->Bind();
 		for (auto& particle : particles)
 		{
 			if (particle.Life > 0.0f)
 			{
-				shader.SetUniformVec2f("offset", particle.Position);
-				shader.SetUniformVec4f("color", particle.Color);
-				texture.Bind();
+				shader->SetUniformVec2f("offset", particle.Position);
+				shader->SetUniformVec4f("color", particle.Color);
+				texture->Bind();
 				glBindVertexArray(VAO);
 				glDrawArrays(GL_TRIANGLES, 0, 6);
 				glBindVertexArray(0);

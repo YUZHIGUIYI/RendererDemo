@@ -18,11 +18,12 @@ public:
 	void RenderWindowSwapBuffers();
 	void RenderWindowPollEvents();
 	GLFWwindow* GetGLFWwindow();
-	void ProcessInput();
+	void Update();
 
 	RenderScene* GetSceneBuffer() const { return SceneBuffer.get(); };
 
 private:
+	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 	static void render_window_init(int width, int height);
 	static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -30,13 +31,13 @@ private:
 
 private:
 	unsigned int m_Width, m_Height;
-	float m_DeltaTime, m_LastFrame;
 	std::string m_WindowName;
 	
 	GLFWwindow* m_Window;
 	GLFWmonitor* m_Monitor;
 	GLFWwindow* m_Share;
 
+	static float m_DeltaTime, m_LastFrame;
 	static double m_Lastx, m_Lasty;
 	static bool m_ShowMouse;
 	static bool m_FirstMouse;

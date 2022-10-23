@@ -219,6 +219,12 @@
     <ClCompile Include="src\RenderScene.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\Input.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windows\ImGuiGameMenu.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader.h">
@@ -1289,6 +1295,12 @@
     <ClInclude Include="src\RenderScene.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\Input.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windows\ImGuiGameMenu.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.vert" />
@@ -1846,5 +1858,7 @@
     <None Include="res\shaders\breakout\Particle.frag" />
     <None Include="res\shaders\breakout\PostProcessing.vert" />
     <None Include="res\shaders\breakout\PostProcessing.frag" />
+    <None Include="res\shaders\breakout\Text2D.vert" />
+    <None Include="res\shaders\breakout\Text2D.frag" />
   </ItemGroup>
 </Project>

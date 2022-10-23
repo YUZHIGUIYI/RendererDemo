@@ -19,11 +19,15 @@ namespace sample
 		void OnRender(const Camera& camera, RenderScene* scenebuffer) override;
 		void OnImGuiRenderer() override;
 
+		void Init(RenderScene* scenebuffer);
+
 	private:
 		void renderCube();
 		void renderQuad();
 
 	private:
+		bool Done;
+
 		unsigned int cubeVAO, cubeVBO;
 		unsigned int quadVAO, quadVBO;
 

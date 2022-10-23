@@ -10,7 +10,7 @@ namespace sample
 {
 
 	SampleDeferredShading::SampleDeferredShading()
-		: cubeVAO(0), cubeVBO(0), quadVAO(0), quadVBO(0)
+		: cubeVAO(0), cubeVBO(0), quadVAO(0), quadVBO(0), Done(false)
 	{
 		// build and compile shaders
 		m_ShaderGeometryPass = std::make_unique<Renderer::Shader>("res/shaders/defer/GBuffer.vert",
@@ -34,43 +34,15 @@ namespace sample
 
 		// configure g-buffer framebuffer
 		glGenFramebuffers(1, &gBuffer);
-		glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
 		// position color buffer
 		glGenTextures(1, &gPosition);
-		glBindTexture(GL_TEXTURE_2D, gPosition);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Width, m_Height, 0, GL_RGBA, GL_FLOAT, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
 		// normal color buffer
 		glGenTextures(1, &gNormal);
-		glBindTexture(GL_TEXTURE_2D, gNormal);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Width, m_Height, 0, GL_RGBA, GL_FLOAT, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
 		// color + specular color buffer
 		glGenTextures(1, &gAlbedoSpec);
-		glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedoSpec, 0);
-		// tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
-		attachments[0] = GL_COLOR_ATTACHMENT0;
-		attachments[1] = GL_COLOR_ATTACHMENT1;
-		attachments[2] = GL_COLOR_ATTACHMENT2;
-		glDrawBuffers(3, attachments);
 		// create and attach depth buffer (renderbuffer)
 		glGenRenderbuffers(1, &rboDepth);
-		glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_Width, m_Height);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
-		// finally check if framebuffer is complete
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			RD_ERROR("FrameBuffer not complete");
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+		
 		// lighting info
 		const unsigned int NR_LIGHTS = 32;
 		lightPositions.reserve(NR_LIGHTS);
@@ -118,6 +90,10 @@ namespace sample
 
 	void SampleDeferredShading::OnRender(const Camera& camera, RenderScene* scenebuffer)
 	{
+		if (!Done || scenebuffer->HasChanged())
+		{
+			Init(scenebuffer);
+		}
 		// render
 		// ------
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -143,6 +119,8 @@ namespace sample
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+		scenebuffer->Bind();
+
 		// 2. lighting pass: calculate lighting by iterating over a screen filled quad pixel-by-pixel using the gbuffer's content
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		m_ShaderLightingPass->Bind();
@@ -167,14 +145,16 @@ namespace sample
 		// finally render quad
 		renderQuad();
 
+		scenebuffer->Unbind();
+
 		// 2.5 copy content of geometry's depth buffer to default framebuffer's depth buffer
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);  // write to default framebuffer
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, scenebuffer->GetFrameBuffer());  // write to default framebuffer
 		// blit to default framebuffer. Note that this may or may not work as the internal formats of both the FBO and default framebuffer have to match.
 		// the internal formats are implementation defined. This works on all of my systems, but if it doesn't on yours you'll likely have to write to the 		
 		// depth buffer in another shader stage (or somehow see to match the default framebuffer's internal format with the FBO's internal format).
 		glBlitFramebuffer(0, 0, m_Width, m_Height, 0, 0, m_Width, m_Height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, scenebuffer->GetFrameBuffer());
 		
 		// 3. render lights on top of scene
 		m_ShaderLightBox->Bind();
@@ -189,11 +169,54 @@ namespace sample
 			m_ShaderLightBox->SetUniformVec3f("lightColor", lightColors[i]);
 			renderCube();
 		}
+
+		scenebuffer->Unbind();
 	}
 
 	void SampleDeferredShading::OnImGuiRenderer()
 	{
 		ImGui::TextColored(ImVec4(0.8f, 0.6f, 0.2f, 1.0f), "Deferred Shading");
+	}
+
+	void SampleDeferredShading::Init(RenderScene* scenebuffer)
+	{
+		m_Width = scenebuffer->GetWidth();
+		m_Height = scenebuffer->GetHeight();
+		Done = true;
+
+		// bind gbuffer
+		glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
+		// texture position
+		glBindTexture(GL_TEXTURE_2D, gPosition);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Width, m_Height, 0, GL_RGBA, GL_FLOAT, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
+		// texture normal
+		glBindTexture(GL_TEXTURE_2D, gNormal);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Width, m_Height, 0, GL_RGBA, GL_FLOAT, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
+		// color + specular color buffer
+		glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedoSpec, 0);
+		// tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
+		attachments[0] = GL_COLOR_ATTACHMENT0;
+		attachments[1] = GL_COLOR_ATTACHMENT1;
+		attachments[2] = GL_COLOR_ATTACHMENT2;
+		glDrawBuffers(3, attachments);
+		// create and attach depth buffer (renderbuffer)
+		glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_Width, m_Height);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+		// finally check if framebuffer is complete
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			RD_ERROR("FrameBuffer not complete");
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
 	void SampleDeferredShading::renderCube()

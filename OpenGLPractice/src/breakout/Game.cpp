@@ -1,13 +1,13 @@
 #include "Game.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
+#include "Input.h"
 
 namespace breakout
 {
 
 	Game::Game(unsigned int width, unsigned int height)
-		: State(GameState::GMAE_ACTIVE), Keys(), Width(width), Height(height)
+		: State(GameState::GMAE_ACTIVE), Width(width), Height(height)
 	{
 		SoundEngine = irrklang::createIrrKlangDevice();
 	}
@@ -29,13 +29,13 @@ namespace breakout
 		// configure shaders
 		glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(this->Width),
 			static_cast<float>(this->Height), 0.0f, -1.0f, 1.0f);
-		ResourceManager::Shaders["sprite"].Bind();
-		ResourceManager::Shaders["sprite"].SetUniform1i("image", 0);
-		ResourceManager::Shaders["sprite"].SetUniformMat4f("projection", 1, projection);
+		ResourceManager::Shaders["sprite"]->Bind();
+		ResourceManager::Shaders["sprite"]->SetUniform1i("image", 0);
+		ResourceManager::Shaders["sprite"]->SetUniformMat4f("projection", 1, projection);
 
-		ResourceManager::Shaders["particle"].Bind();
-		ResourceManager::Shaders["particle"].SetUniform1i("sprite", 0);
-		ResourceManager::Shaders["particle"].SetUniformMat4f("projection", 1, projection);
+		ResourceManager::Shaders["particle"]->Bind();
+		ResourceManager::Shaders["particle"]->SetUniform1i("sprite", 0);
+		ResourceManager::Shaders["particle"]->SetUniformMat4f("projection", 1, projection);
 		
 		// load textures
 		ResourceManager::LoadTexture("res/textures/background.jpg", false, "background");
@@ -53,13 +53,13 @@ namespace breakout
 		ResourceManager::LoadTexture("res/textures/powerup_passthrough.png", true, "powerup_passthrough");
 
 		// set render-specific controls
-		Renderer = std::make_unique<breakout::SpriteRenderer>(ResourceManager::Shaders["sprite"]);
-		Particles = std::make_unique<breakout::ParticleGenerator>(ResourceManager::Shaders["particle"],
-			ResourceManager::Textures["particle"], 500);
-		Effects = std::make_unique<breakout::PostProcessor>(ResourceManager::Shaders["postprocessing"],
+		Renderer = std::make_unique<breakout::SpriteRenderer>(ResourceManager::GetShader("sprite"));
+		Particles = std::make_unique<breakout::ParticleGenerator>(ResourceManager::GetShader("particle"),
+			ResourceManager::GetTexture("particle"), 500);
+		Effects = std::make_unique<breakout::PostProcessor>(ResourceManager::GetShader("postprocessing"),
 			this->Width, this->Height);
 		Text = std::make_unique<breakout::TextRenderer>(this->Width, this->Height);
-		Text->Load("res/fonts/ocraext.TTF", 24);
+		Text->Load("res/fonts/Antonio-Bold.ttf", 24);
 
 		// load levels
 		GameLevel one;
@@ -81,12 +81,12 @@ namespace breakout
 		// configure game objects - player
 		glm::vec2 playerPos = glm::vec2(this->Width / 2.0f - Player_Size.x / 2.0f, this->Height - Player_Size.y);
 		Player = std::make_unique<breakout::GameObject>(playerPos, Player_Size, 
-			ResourceManager::Textures["paddle"]);
+			ResourceManager::GetTexture("paddle"));
 
 		// configure ball
 		glm::vec2 ballPos = playerPos + glm::vec2(Player_Size.x / 2.0f - Ball_Radius, -Ball_Radius * 2.0f);
 		Ball = std::make_unique<BallObject>(ballPos, Ball_Radius, Initial_Ball_Velocity,
-			ResourceManager::Textures["face"]);
+			ResourceManager::GetTexture("face"));
 
 		// audio
 		SoundEngine->play2D("res/audio/breakout.mp3", true);
@@ -94,26 +94,28 @@ namespace breakout
 
 	void Game::ProcessInput(float dt)
 	{
+		using namespace Renderer;
+
 		// select menu
 		if (this->State == GameState::GAME_MENU)
 		{
-			if (this->Keys[GLFW_KEY_ENTER] && !this->KeysProcessed[GLFW_KEY_ENTER])
+			if (Input::Keys[GLFW_KEY_ENTER] && !Input::KeysProcessed[GLFW_KEY_ENTER])
 			{
 				this->State = GameState::GMAE_ACTIVE;
-				this->KeysProcessed[GLFW_KEY_ENTER] = true;
+				Input::KeysProcessed[GLFW_KEY_ENTER] = true;
 			}
-			if (this->Keys[GLFW_KEY_W] && !this->KeysProcessed[GLFW_KEY_W])
+			if (Input::Keys[GLFW_KEY_W] && !Input::KeysProcessed[GLFW_KEY_W])
 			{
 				this->Level = (this->Level + 1) % 4;
-				this->KeysProcessed[GLFW_KEY_W] = true;
+				Input::KeysProcessed[GLFW_KEY_W] = true;
 			}
-			if (this->Keys[GLFW_KEY_S] && !this->KeysProcessed[GLFW_KEY_S])
+			if (Input::Keys[GLFW_KEY_S] && !Input::KeysProcessed[GLFW_KEY_S])
 			{
 				if (this->Level > 0)
 					--this->Level;
 				else
 					this->Level = 3;
-				this->KeysProcessed[GLFW_KEY_S] = true;
+				Input::KeysProcessed[GLFW_KEY_S] = true;
 			}
 		}
 		// game active
@@ -121,7 +123,7 @@ namespace breakout
 		{
 			float velocity = Player_Velocity * dt;
 			// move player-board
-			if (this->Keys[GLFW_KEY_A])
+			if (Input::Keys[GLFW_KEY_A])
 			{
 				if (Player->Position.x >= 0.0f)
 				{
@@ -129,7 +131,7 @@ namespace breakout
 					if (Ball->Stuck) Ball->Position.x -= velocity;
 				}
 			}
-			if (this->Keys[GLFW_KEY_D])
+			if (Input::Keys[GLFW_KEY_D])
 			{
 				if (Player->Position.x <= this->Width - Player->Size.x)
 				{
@@ -137,7 +139,7 @@ namespace breakout
 					if (Ball->Stuck) Ball->Position.x += velocity;
 				}
 			}
-			if (this->Keys[GLFW_KEY_SPACE])
+			if (Input::Keys[GLFW_KEY_SPACE])
 			{
 				Ball->Stuck = false;
 			}
@@ -145,9 +147,9 @@ namespace breakout
 		// game win
 		if (this->State == GameState::GAME_WIN)
 		{
-			if (this->Keys[GLFW_KEY_ENTER])
+			if (Input::Keys[GLFW_KEY_ENTER])
 			{
-				this->KeysProcessed[GLFW_KEY_ENTER] = true;
+				Input::KeysProcessed[GLFW_KEY_ENTER] = true;
 				Effects->Chaos = false;
 				this->State = GameState::GAME_MENU;
 			}
@@ -209,7 +211,7 @@ namespace breakout
 			Effects->BeginRender();
 			// draw background
 			// TODO: Fix me
-			Renderer->DrawSprite(ResourceManager::Textures["background"], glm::vec2(0.0f, 0.0f),
+			Renderer->DrawSprite(*ResourceManager::Textures["background"], glm::vec2(0.0f, 0.0f),
 				glm::vec2(this->Width, this->Height), 0.0f);
 			// draw level
 			this->Levels.at(this->Level).Draw(*Renderer);
@@ -341,7 +343,7 @@ namespace breakout
 			// if stick powerup is activated, also stick ball to paddle once new velocity vectors were calculated
 			Ball->Stuck = Ball->Sticky;
 
-			SoundEngine->play2D("res/bleep.wav", false);
+			SoundEngine->play2D("res/audio/bleep.wav", false);
 		}
 
 	}
@@ -382,7 +384,7 @@ namespace breakout
 			// 1 in 75 chance
 			PowerUps.push_back(
 				PowerUp("speed", glm::vec3(0.5f, 0.5f, 1.0f), 0.0f, block.Position, 
-					ResourceManager::Textures["powerup_speed"])
+					ResourceManager::GetTexture("powerup_speed"))
 			);
 		}
 		if (ShouldSpawn(75))
@@ -390,7 +392,7 @@ namespace breakout
 			// 1 in 75 chance
 			PowerUps.push_back(
 				PowerUp("sticky", glm::vec3(1.0f, 0.5f, 1.0f), 20.0f, block.Position, 
-					ResourceManager::Textures["powerup_sticky"])
+					ResourceManager::GetTexture("powerup_sticky"))
 			);
 		}
 		if (ShouldSpawn(75))
@@ -398,7 +400,7 @@ namespace breakout
 			// 1 in 75 chance
 			PowerUps.push_back(
 				PowerUp("pass-through", glm::vec3(0.5f, 1.0f, 0.5f), 10.0f, block.Position, 
-					ResourceManager::Textures["powerup_passthrough"])
+					ResourceManager::GetTexture("powerup_passthrough"))
 			);
 		}
 		if (ShouldSpawn(75))
@@ -406,7 +408,7 @@ namespace breakout
 			// 1 in 75 chance
 			PowerUps.push_back(
 				PowerUp("pad-size-increase", glm::vec3(1.0f, 0.6f, 0.4f), 0.0f, block.Position, 
-					ResourceManager::Textures["powerup_increase"])
+					ResourceManager::GetTexture("powerup_increase"))
 			);
 		}
 		if (ShouldSpawn(15))
@@ -414,7 +416,7 @@ namespace breakout
 			// 1 in 75 chance
 			PowerUps.push_back(
 				PowerUp("confuse", glm::vec3(1.0f, 0.3f, 0.3f), 15.0f, block.Position, 
-					ResourceManager::Textures["powerup_confuse"])
+					ResourceManager::GetTexture("powerup_confuse"))
 			);
 		}
 		if (ShouldSpawn(15))
@@ -422,7 +424,7 @@ namespace breakout
 			// 1 in 75 chance
 			PowerUps.push_back(
 				PowerUp("chaos", glm::vec3(0.9f, 0.25f, 0.25f), 15.0f, block.Position, 
-					ResourceManager::Textures["powerup_chaos"])
+					ResourceManager::GetTexture("powerup_chaos"))
 			);
 		}
 	}

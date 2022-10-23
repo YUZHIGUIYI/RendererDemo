@@ -152,6 +152,7 @@
     <ClCompile Include="src\breakout\SpriteRenderer.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\RenderScene.cpp" />
     <ClCompile Include="src\samples\SampleAdvancedGLSL.cpp" />
     <ClCompile Include="src\samples\SampleAsteroids.cpp" />
@@ -186,6 +187,7 @@
     <ClCompile Include="src\samples\SampleTextRendering.cpp" />
     <ClCompile Include="src\breakout\TextRenderer.cpp" />
     <ClCompile Include="src\Texture2D.cpp" />
+    <ClCompile Include="src\windows\ImGuiGameMenu.cpp" />
     <ClCompile Include="src\windows\ImGuiUIManager.cpp" />
     <ClCompile Include="src\windows\ImGuiWindowBase.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />
@@ -222,6 +224,7 @@
     <ClInclude Include="src\breakout\ResourceManager.h" />
     <ClInclude Include="src\breakout\SpriteRenderer.h" />
     <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Input.h" />
     <ClInclude Include="src\RenderScene.h" />
     <ClInclude Include="src\samples\SampleAdvancedGLSL.h" />
     <ClInclude Include="src\samples\SampleAsteroids.h" />
@@ -256,6 +259,7 @@
     <ClInclude Include="src\samples\SampleTextRendering.h" />
     <ClInclude Include="src\breakout\TextRenderer.h" />
     <ClInclude Include="src\Texture2D.h" />
+    <ClInclude Include="src\windows\ImGuiGameMenu.h" />
     <ClInclude Include="src\windows\ImGuiUIManager.h" />
     <ClInclude Include="src\windows\ImGuiWindowBase.h" />
     <ClInclude Include="src\IndexBuffer.h" />
@@ -593,6 +597,8 @@
     <None Include="res\shaders\breakout\PostProcessing.vert" />
     <None Include="res\shaders\breakout\Sprite.frag" />
     <None Include="res\shaders\breakout\Sprite.vert" />
+    <None Include="res\shaders\breakout\Text2D.frag" />
+    <None Include="res\shaders\breakout\Text2D.vert" />
     <None Include="res\shaders\CastLight.frag" />
     <None Include="res\shaders\CastLight.vert" />
     <None Include="res\shaders\CastLightView.frag" />

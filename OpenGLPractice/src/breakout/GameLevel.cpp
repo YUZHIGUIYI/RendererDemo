@@ -4,6 +4,13 @@
 
 namespace breakout
 {
+	GameLevel::GameLevel()
+	{
+	}
+
+	GameLevel::~GameLevel()
+	{
+	}
 
 	void GameLevel::Load(const std::string& file, unsigned int levelWidth, unsigned int levelHeight)
 	{

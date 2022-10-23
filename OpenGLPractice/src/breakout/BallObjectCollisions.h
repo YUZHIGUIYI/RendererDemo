@@ -18,7 +18,7 @@ namespace breakout
 		bool Sticky, PassThrough;
 		
 		BallObject();
-		BallObject(glm::vec2 pos, float radius, glm::vec2 velocity, Renderer::Texture2D sprite);
+		BallObject(glm::vec2 pos, float radius, glm::vec2 velocity, Renderer::Texture2D* sprite);
 		// moves the ball, keeping it constrained within the window bounds (except bottom edge);
 		// returns new position
 		glm::vec2 Move(float dt, unsigned int window_width);

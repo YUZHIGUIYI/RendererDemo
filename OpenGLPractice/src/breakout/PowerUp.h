@@ -19,7 +19,7 @@ namespace breakout
 		float Duration;
 		bool Activated;
 		// constructor
-		PowerUp(std::string type, glm::vec3 color, float duration, glm::vec2 position, Renderer::Texture2D texture)
+		PowerUp(std::string type, glm::vec3 color, float duration, glm::vec2 position, Renderer::Texture2D* texture)
 			: GameObject(position, PowerUp_Size, texture, color, Velocity), 
 			Type(type), Duration(duration), Activated() { }
 	};

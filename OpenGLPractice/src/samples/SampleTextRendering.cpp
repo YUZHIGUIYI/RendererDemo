@@ -14,7 +14,8 @@ namespace sample
 {
 
 	SampleTextRendering::SampleTextRendering()
-		: m_ColorTop(glm::vec3(0.3f, 0.7f, 0.9f)), m_ColorBot(glm::vec3(0.5f, 0.8f, 0.2f))
+		: m_ColorTop(glm::vec3(0.3f, 0.7f, 0.9f)), m_ColorBot(glm::vec3(0.5f, 0.8f, 0.2f)),
+			Done(false)
 	{
 		// OpenGL state
 		glEnable(GL_CULL_FACE);
@@ -117,6 +118,12 @@ namespace sample
 
 	void SampleTextRendering::OnRender(const Camera& camera, RenderScene* scenebuffer)
 	{
+		if (!Done || scenebuffer->HasChanged())
+		{
+			Done = true;
+			m_Width = scenebuffer->GetWidth();
+			m_Height = scenebuffer->GetHeight();
+		}
 		// render
 		// ------
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -124,6 +131,8 @@ namespace sample
 
 		RenderText("This is sample text render", 25.0f, 25.0f, 1.0f, m_ColorBot);
 		RenderText("(C) Renderer Demo", 540.0f, 570.0f, 0.5f, m_ColorTop);
+
+		scenebuffer->BlitFramebuffer();
 	}
 
 	void SampleTextRendering::OnImGuiRenderer()
@@ -137,6 +146,9 @@ namespace sample
 	{
 		m_Shader->Bind();
 		m_Shader->SetUniformVec3f("textColor", color);
+		glm::mat4 projection = glm::ortho(0.0f, (float)m_Width, 0.0f, (float)m_Height);
+		m_Shader->SetUniformMat4f("projection", 1, projection);
+
 		glActiveTexture(GL_TEXTURE0);
 		glBindVertexArray(VAO);
 

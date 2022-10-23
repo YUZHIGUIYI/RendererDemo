@@ -1,13 +1,13 @@
 #include "windows/RenderWindow.h"
 #include "windows/ImGuiUIManager.h"
 #include "windows/SampleMenu.h"
-//#include "samples/SampleClearColor.h"
+#include "windows/ImGuiGameMenu.h"
+
 #include "samples/SampleRenderModel.h"
 #include "samples/SampleStencil.h"
 #include "samples/SampleBlending.h"
 #include "samples/SampleBlendingWindow.h"
 #include "samples/SampleFaceCulling.h"
-#include "samples/SampleFrameBuffers.h"
 //#include "samples/SampleSkyBox.h"
 #include "samples/SampleSkyBoxNanosuit.h"
 //#include "samples/SampleAdvancedGLSL.h"
@@ -17,8 +17,6 @@
 //#include "samples/SampleInstancing.h"
 #include "samples/SampleAsteroids.h"
 #include "samples/SampleMSAA.h"
-//#include "samples/SampleBlinnPhong.h"
-//#include "samples/SampleGammaCorrection.h"
 #include "samples/SampleShadowMapping.h"
 #include "samples/SamplePointShadows.h"
 #include "samples/SampleNormalMapping.h"
@@ -39,6 +37,7 @@
 
 #include <irrKlang/irrKlang.h>
 
+#include "Input.h"
 #include "Log.h"
 
 const unsigned int WIDTH = 1600;
@@ -46,6 +45,7 @@ const unsigned int HEIGHT = 1200;
 
 int main()
 {
+	Renderer::Input::Init();
 	Renderer::Log::Init();
 	RD_CORE_INFO("Welcome to Renderer Demo");
 
@@ -67,7 +67,6 @@ int main()
 	sampleMenu->RegisterSample<sample::SampleBlending>("Blending Grass");
 	sampleMenu->RegisterSample<sample::SampleBlendingWindow>("Blending Window");
 	sampleMenu->RegisterSample<sample::SampleFaceCulling>("Face Culling");
-	sampleMenu->RegisterSample<sample::SampleFrameBuffers>("Frame Buffer");
 	//sampleMenu->RegisterSample<sample::SampleSkyBox>("Sky Box");
 	sampleMenu->RegisterSample<sample::SampleSkyBoxNanosuit>("Sky Box Nano-suit");
 	//sampleMenu->RegisterSample<sample::SampleAdvancedGLSL>("Advanced GLSL");
@@ -95,14 +94,17 @@ int main()
 
 	UIManager.AddWindow(std::move(sampleMenu));
 
+	std::unique_ptr<ImGuiGameMenu> gameMenu = std::make_unique<ImGuiGameMenu>();
+	UIManager.AddWindow(std::move(gameMenu));
+
 	// audio example
-	irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
-	SoundEngine->play2D("res/audio/breakout.mp3", true);
+	//irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
+	//SoundEngine->play2D("res/audio/breakout.mp3", true);
 
 	// Render cycle
 	while (!renderwindow.RenderWindowShouldClose())
 	{
-		renderwindow.ProcessInput();
+		renderwindow.Update();
 
 		// Clear color buffer | depth buffer | stencil buffer
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -118,7 +120,7 @@ int main()
 		renderwindow.RenderWindowPollEvents();
 	}
 
-	SoundEngine->drop();
+	//SoundEngine->drop();
 
 	return 0;
 }

@@ -25,7 +25,7 @@ namespace breakout
 		// holds a list of pre-compiled Characters
 		std::unordered_map<char, Character> Characters;
 		// shader used for text rendering
-		Renderer::Shader TextShader;
+		Renderer::Shader* TextShader;
 		// constructor
 		TextRenderer(unsigned int width, unsigned int height);
 		~TextRenderer();

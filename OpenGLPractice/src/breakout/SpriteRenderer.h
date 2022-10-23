@@ -10,7 +10,7 @@ namespace breakout
 	class SpriteRenderer
 	{
 	public:
-		SpriteRenderer(Renderer::Shader& shader);
+		SpriteRenderer(Renderer::Shader* shader);
 		~SpriteRenderer();
 
 		// Renders a defined quad textured with given sprite
@@ -19,7 +19,7 @@ namespace breakout
 
 	private:
 		// Render state
-		Renderer::Shader shader;
+		Renderer::Shader* shader;
 		unsigned int quadVAO;
 		// Initializes and configures the quad's buffer and vertex attributes
 		void InitRenderData();

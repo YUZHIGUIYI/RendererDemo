@@ -16,13 +16,13 @@ namespace breakout
 	{
 	public:
 		// state 
-		Renderer::Shader PostProcessingShader;
+		Renderer::Shader* PostProcessingShader;
 		Renderer::Texture2D Texture;
 		unsigned int Width, Height;
 		// options
 		bool Confuse, Chaos, Shake;
 		// constructor
-		PostProcessor(Renderer::Shader shader, unsigned int width, unsigned int height);
+		PostProcessor(Renderer::Shader* shader, unsigned int width, unsigned int height);
 		// prepares the postprocessor's framebuffer operations before rendering the game
 		void BeginRender();
 		// should be called after rendering the game, so it stores all the rendered data into a texture object

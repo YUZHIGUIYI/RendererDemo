@@ -5,7 +5,7 @@
 namespace breakout
 {
 
-	SpriteRenderer::SpriteRenderer(Renderer::Shader& shader)
+	SpriteRenderer::SpriteRenderer(Renderer::Shader* shader)
 	{
 		this->shader = shader;
 		InitRenderData();
@@ -20,7 +20,7 @@ namespace breakout
 		glm::vec2 size /*= glm::vec2(10.0f, 10.0f)*/, float rotate /*= 0.0f*/, glm::vec3 color /*= glm::vec3(1.0f)*/)
 	{
 		// prepare transformations
-		this->shader.Bind();
+		this->shader->Bind();
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(position, 0.0f));  // first translate (transformations are: scale happens first, then rotation, and then final translation happens; reversed order)
 
@@ -30,10 +30,10 @@ namespace breakout
 
 		model = glm::scale(model, glm::vec3(size, 1.0f)); // last scale
 
-		this->shader.SetUniformMat4f("model", 1, model);
+		this->shader->SetUniformMat4f("model", 1, model);
 
 		// render textured quad
-		this->shader.SetUniformVec3f("spriteColor", color);
+		this->shader->SetUniformVec3f("spriteColor", color);
 
 		glActiveTexture(GL_TEXTURE0);
 		texture.Bind();

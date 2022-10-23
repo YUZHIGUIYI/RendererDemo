@@ -15,7 +15,8 @@ namespace breakout
 		// level state
 		std::vector<GameObject> Bricks;
 		// constructor
-		GameLevel() {}
+		GameLevel();
+		~GameLevel();
 		// loads level from file
 		void Load(const std::string& file, unsigned int levelWidth, unsigned int levelHeight);
 		// render level

@@ -32,6 +32,8 @@ namespace sample
 			float scale, const glm::vec3& color);
 
 	private:
+		bool Done = false;
+
 		unsigned int VAO, VBO;
 
 		glm::vec3 m_ColorTop;

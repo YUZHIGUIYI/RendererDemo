@@ -5,32 +5,44 @@
 namespace breakout
 {
 
-	std::unordered_map<std::string, Renderer::Shader> ResourceManager::Shaders;
+	std::unordered_map<std::string, std::unique_ptr<Renderer::Shader>> ResourceManager::Shaders;
 
-	std::unordered_map<std::string, Renderer::Texture2D> ResourceManager::Textures;
+	std::unordered_map<std::string, std::unique_ptr<Renderer::Texture2D>> ResourceManager::Textures;
 
-	Renderer::Shader ResourceManager::LoadShader(const std::string& vShaderFile, 
+	void ResourceManager::LoadShader(const std::string& vShaderFile, 
 		const std::string& fShaderFile, const std::string& gShaderFile, const std::string& name)
 	{
-		Shaders[name] = loadShaderFromFile(vShaderFile, fShaderFile, gShaderFile);
-		return Shaders[name];
+		//Shaders[name] = loadShaderFromFile(vShaderFile, fShaderFile, gShaderFile);
+		Shaders[name] = std::make_unique<Renderer::Shader>(vShaderFile, fShaderFile, gShaderFile);
 	}
 
-	Renderer::Shader ResourceManager::GetShader(const std::string& name)
+	Renderer::Shader* ResourceManager::GetShader(const std::string& name)
 	{
-		return Shaders[name];
+		return Shaders[name].get();
 	}
 
-	Renderer::Texture2D ResourceManager::LoadTexture(const std::string& file, bool alpha, 
+	void ResourceManager::LoadTexture(const std::string& file, bool alpha, 
 		const std::string& name)
 	{
-		Textures[name] = loadTextureFromFile(file, alpha);
-		return Textures[name];
+		Textures[name] = std::make_unique<Renderer::Texture2D>();
+
+		if (alpha)
+		{
+			Textures[name]->Internal_Format = GL_RGBA;
+			Textures[name]->Image_Format = GL_RGBA;
+		}
+		// load image
+		int width, height, nrChannels;
+		unsigned char* data = stbi_load(file.c_str(), &width, &height, &nrChannels, 0);
+		// now generate texture
+		Textures[name]->Generate(width, height, data);
+		// and finally free image data
+		stbi_image_free(data);
 	}
 
-	Renderer::Texture2D ResourceManager::GetTexture(const std::string& name)
+	Renderer::Texture2D* ResourceManager::GetTexture(const std::string& name)
 	{
-		return Textures[name];
+		return Textures[name].get();
 	}
 
 	void ResourceManager::Clear()
@@ -39,13 +51,13 @@ namespace breakout
 		{
 			// TODO: Fix Me
 			// 已有析构函数
-			glDeleteProgram(iter.second.GetRendererID());
+			glDeleteProgram(iter.second->GetRendererID());
 		}
 		for (const auto& iter : Textures)
 		{
 			// TODO: Fix Me
 			// 已有析构函数
-			glDeleteTextures(1, &iter.second.ID);
+			glDeleteTextures(1, &iter.second->ID);
 		}
 	}
 
@@ -58,6 +70,7 @@ namespace breakout
 	Renderer::Texture2D ResourceManager::loadTextureFromFile(const std::string& file, bool alpha)
 	{
 		Renderer::Texture2D texture;
+
 		if (alpha)
 		{
 			texture.Internal_Format = GL_RGBA;

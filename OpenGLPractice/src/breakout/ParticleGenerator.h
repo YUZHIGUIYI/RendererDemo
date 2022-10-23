@@ -22,7 +22,7 @@ namespace breakout
 	class ParticleGenerator
 	{
 	public:
-		ParticleGenerator(Renderer::Shader shader, Renderer::Texture2D texture, unsigned int amount);
+		ParticleGenerator(Renderer::Shader* shader, Renderer::Texture2D* texture, unsigned int amount);
 
 		// update all particles
 		void Update(float dt, GameObject& object, unsigned int newParticles, glm::vec2 offset = glm::vec2(0.0f, 0.0f));
@@ -39,8 +39,8 @@ namespace breakout
 		unsigned int amount;
 		
 		// render state
-		Renderer::Shader shader;
-		Renderer::Texture2D texture;
+		Renderer::Shader* shader;
+		Renderer::Texture2D* texture;
 		unsigned int VAO;
 
 		// initializes buffer and vertex attributes

@@ -14,12 +14,13 @@ namespace breakout
 	TextRenderer::TextRenderer(unsigned int width, unsigned int height)
 	{
 		// load and configure shader
-		this->TextShader = ResourceManager::LoadShader("res/shaders/breakout/Text2D.vert", 
+		ResourceManager::LoadShader("res/shaders/breakout/Text2D.vert", 
 			"res/shaders/breakout/Text2D.frag", "", "text");
-		this->TextShader.Bind();
-		this->TextShader.SetUniformMat4f("projection", 1, 
+		this->TextShader = ResourceManager::GetShader("text");
+		this->TextShader->Bind();
+		this->TextShader->SetUniformMat4f("projection", 1, 
 			glm::ortho(0.0f, static_cast<float>(width), static_cast<float>(height), 0.0f));
-		this->TextShader.SetUniform1i("text", 0);
+		this->TextShader->SetUniform1i("text", 0);
 
 		// configure VAO/VBO for texture quads
 		glGenVertexArrays(1, &this->VAO);
@@ -51,51 +52,55 @@ namespace breakout
 		FT_Face face;
 		if (FT_New_Face(ft, font.c_str(), 0, &face))
 			RD_ERROR("FreeType Error: Failed to load font");
-		// set size to load glyphs as
-		FT_Set_Pixel_Sizes(face, 0, fontSize);
-		// disable byte-alignment restriction
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-		// then for the first 128 ASCII characters, pre-load/compile their characters and store them
-		for (char c = 0; c < 128; ++c)
+		else 
 		{
-			// load character glyph 
-			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+			// set size to load glyphs as
+			FT_Set_Pixel_Sizes(face, 0, fontSize);
+			// disable byte-alignment restriction
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+			// then for the first 128 ASCII characters, pre-load/compile their characters and store them
+			// #TODO: Why 128 doesn't work
+			for (char c = 0; c < 127; ++c)
 			{
-				RD_ERROR("FreeType Error: Failed to load Glyph");
-				continue;
+				// load character glyph 
+				if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+				{
+					RD_ERROR("FreeType Error: Failed to load Glyph");
+					continue;
+				}
+				// generate texture
+				unsigned int texture;
+				glGenTextures(1, &texture);
+				glBindTexture(GL_TEXTURE_2D, texture);
+				glTexImage2D(
+					GL_TEXTURE_2D,
+					0,
+					GL_RED,
+					face->glyph->bitmap.width,
+					face->glyph->bitmap.rows,
+					0,
+					GL_RED,
+					GL_UNSIGNED_BYTE,
+					face->glyph->bitmap.buffer
+				);
+				// set texture options
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+				// now store character for later use
+				Character character = {
+					texture,
+					glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+					glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+					static_cast<unsigned int>(face->glyph->advance.x)
+				};
+
+				Characters.insert({ c, character });
 			}
-			// generate texture
-			unsigned int texture;
-			glGenTextures(1, &texture);
-			glBindTexture(GL_TEXTURE_2D, texture);
-			glTexImage2D(
-				GL_TEXTURE_2D,
-				0,
-				GL_RED,
-				face->glyph->bitmap.width,
-				face->glyph->bitmap.rows,
-				0,
-				GL_RED,
-				GL_UNSIGNED_BYTE,
-				face->glyph->bitmap.buffer
-			);
-			// set texture options
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-			// now store character for later use
-			Character character = {
-				texture,
-				glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
-				glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-				face->glyph->advance.x
-			};
-
-			Characters.insert({ c, character });
+			glBindTexture(GL_TEXTURE_2D, 0);
 		}
-		glBindTexture(GL_TEXTURE_2D, 0);
 		// destroy FreeType once we're finished
 		FT_Done_Face(face);
 		FT_Done_FreeType(ft);
@@ -105,8 +110,8 @@ namespace breakout
 		glm::vec3 color /*= glm::vec3(1.0f)*/)
 	{
 		// activate corresponding render state
-		this->TextShader.Bind();
-		this->TextShader.SetUniformVec3f("textColor", color);
+		this->TextShader->Bind();
+		this->TextShader->SetUniformVec3f("textColor", color);
 		glActiveTexture(GL_TEXTURE0);
 		glBindVertexArray(this->VAO);
 

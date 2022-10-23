@@ -115,7 +115,8 @@ void ImGuiUIManager::UpdateWindows(const Camera& camera, RenderScene* scenebuffe
 		m_Windows[i]->Update(camera, scenebuffer);
 	}
 
-	ImGui::Begin("Scene", &sceneshow);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+	ImGui::Begin("Viewport", &sceneshow);
 	{
 		//ImGui::BeginChild("Render");
 		//float width = ImGui::GetContentRegionAvail().x;
@@ -128,6 +129,7 @@ void ImGuiUIManager::UpdateWindows(const Camera& camera, RenderScene* scenebuffe
 		//ImGui::EndChild();
 	}
 	ImGui::End();
+	ImGui::PopStyleVar();
 
 	//scenebuffer->Unbind();
 }
