@@ -21,6 +21,7 @@ namespace breakout
 		// Render state
 		Renderer::Shader* shader;
 		unsigned int quadVAO;
+		unsigned int quadVBO;
 		// Initializes and configures the quad's buffer and vertex attributes
 		void InitRenderData();
 	};

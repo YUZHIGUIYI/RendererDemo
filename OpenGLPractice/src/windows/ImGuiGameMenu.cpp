@@ -36,6 +36,7 @@ void ImGuiGameMenu::Update(const Camera& camera, RenderScene* scenebuffer)
 				{
 					m_Game = std::make_unique<breakout::Game>(scenebuffer->GetWidth(), scenebuffer->GetHeight());
 					m_Game->Init();
+					Renderer::Input::RendererMode = Renderer::RENDERERMODE::GAME_MODE;
 					RD_WARN("Start Game Break");
 				}
 			}
@@ -44,6 +45,7 @@ void ImGuiGameMenu::Update(const Camera& camera, RenderScene* scenebuffer)
 				if (m_Game != nullptr)
 				{
 					m_Game.reset();
+					Renderer::Input::RendererMode = Renderer::RENDERERMODE::SAMPLE_MODE;
 					RD_WARN("Exit Game Breakout");
 				}
 			}

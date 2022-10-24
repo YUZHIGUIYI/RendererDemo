@@ -12,7 +12,6 @@ namespace breakout
 	void ResourceManager::LoadShader(const std::string& vShaderFile, 
 		const std::string& fShaderFile, const std::string& gShaderFile, const std::string& name)
 	{
-		//Shaders[name] = loadShaderFromFile(vShaderFile, fShaderFile, gShaderFile);
 		Shaders[name] = std::make_unique<Renderer::Shader>(vShaderFile, fShaderFile, gShaderFile);
 	}
 
@@ -77,6 +76,7 @@ namespace breakout
 			texture.Image_Format = GL_RGBA;
 		}
 		// load image
+		stbi_set_flip_vertically_on_load(true);
 		int width, height, nrChannels;
 		unsigned char* data = stbi_load(file.c_str(), &width, &height, &nrChannels, 0);
 		// now generate texture

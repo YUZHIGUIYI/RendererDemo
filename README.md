@@ -19,4 +19,4 @@
 - Physically Based Rendering
 ![PBR](./Preview/PBRDocking.png)
 - 2D Game Breakout
-![Breakout](./Preview/2DGameBreak.png)
+![Breakout](./Preview/2DGameBreakModify.png)

@@ -14,6 +14,7 @@ namespace breakout
 	SpriteRenderer::~SpriteRenderer()
 	{
 		glDeleteVertexArrays(1, &this->quadVAO);
+		glDeleteBuffers(1, &this->quadVBO);
 	}
 
 	void SpriteRenderer::DrawSprite(Renderer::Texture2D& texture, glm::vec2 position, 
@@ -46,7 +47,6 @@ namespace breakout
 	void SpriteRenderer::InitRenderData()
 	{
 		// configure VAO/VBO
-		unsigned int VBO;
 		float vertices[] = {
 			// pos      // tex
 			0.0f, 1.0f, 0.0f, 1.0f,
@@ -59,9 +59,9 @@ namespace breakout
 		};
 
 		glGenVertexArrays(1, &this->quadVAO);
-		glGenBuffers(1, &VBO);
+		glGenBuffers(1, &quadVBO);
 
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 		glBindVertexArray(this->quadVAO);
