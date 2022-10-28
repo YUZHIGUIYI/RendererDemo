@@ -4,7 +4,10 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <AssimpGLMHelpers.h>
+#include <Animdata.h>
 #include <unordered_map>
+
 
 class Model
 {
@@ -21,7 +24,10 @@ public:
 	inline unsigned int GetFirstTextureId() const { return m_FirstTexture.id; }
 
 private:
-	// ToDo: have to fix
+	std::unordered_map<std::string, BoneInfo> m_BoneInfoMap;
+	int m_BoneCounter = 0;
+
+	// TODO: have to fix
 	Texture m_FirstTexture;
 	// model data
 	std::vector<Mesh> meshes;
@@ -29,6 +35,15 @@ private:
 	//std::vector<Texture> textures_loaded;
 	std::unordered_map<std::string, Texture> textures_map;
 	bool gammaCorrection;
+
+public:
+	auto& GetBoneInfoMap() { return m_BoneInfoMap; }
+	int& GetBoneCount() { return m_BoneCounter; }
+	
+private:
+	void SetVertexBoneDataToDefault(Vertex& vertex);
+	void SetVertexBoneData(Vertex& vertex, int boneID, float weight);
+	void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
 
 	void loadModel(const std::string& path);
 	void processNode(aiNode* node, const aiScene* scene);

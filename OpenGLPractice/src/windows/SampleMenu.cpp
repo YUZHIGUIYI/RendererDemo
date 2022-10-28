@@ -1,9 +1,41 @@
 #include "SampleMenu.h"
 #include <imgui/imgui.h>
+#include "samples/SamplePCH.h"
 
 SampleMenu::SampleMenu(/*sample::Sample*& currentSamplePointer*/)
 	: m_CurrentSample(/*currentSamplePointer*/ nullptr)
 {
+	RegisterSample<sample::SampleRenderModel>("Render Nano-suit");
+	RegisterSample<sample::SampleStencil>("Stencil Testing");
+	RegisterSample<sample::SampleBlending>("Blending Grass");
+	RegisterSample<sample::SampleBlendingWindow>("Blending Window");
+	RegisterSample<sample::SampleFaceCulling>("Face Culling");
+	RegisterSample<sample::SampleSkyBoxNanosuit>("Sky Box Nano-suit");
+	//RegisterSample<sample::SampleGeometryHouse>("Geometry House");
+	RegisterSample<sample::SampleGeometryExplode>("Geometry Explode");
+	RegisterSample<sample::SampleGeometryNormal>("Geometry Normal");
+	//RegisterSample<sample::SampleInstancing>("Instances");
+	RegisterSample<sample::SampleAsteroids>("Asteroids Instance");
+	RegisterSample<sample::SampleMSAA>("MSAA");
+	//RegisterSample<sample::SampleBlinnPhong>("BlinnPhong");
+	//RegisterSample<sample::SampleGammaCorrection>("Gamma Correction");
+	RegisterSample<sample::SampleShadowMapping>("Shadow Mapping");
+	RegisterSample<sample::SamplePointShadows>("Point Shadows");
+	RegisterSample<sample::SampleNormalMapping>("Normal Mapping");
+	RegisterSample<sample::SampleParallaxMapping>("Parallax Mapping");
+	RegisterSample<sample::SampleHDR>("High Dynamic Range");
+	RegisterSample<sample::SampleBloom>("Bloom with HDR");
+	RegisterSample<sample::SampleDeferredShading>("Deferred Shading");
+	RegisterSample<sample::SampleSSAO>("Screen-Space Ambient Occlusion");
+	RegisterSample<sample::SampleLightingTextured>("Physically Based Rendering");
+	RegisterSample<sample::SampleIBLIrradiance>("Diffuse Irradiance");
+	RegisterSample<sample::SampleIBLSpecular>("Specular IBL");
+	RegisterSample<sample::SampleIBLSpecularTexture>("Specular IBL Texture");
+	RegisterSample<sample::SampleTextRendering>("Text Rendering");
+	RegisterSample<sample::SampleWeightedOIT>("Order-Independent transparency");
+	RegisterSample<sample::SampleSkeletalAnimation>("Skeletal Animation");
+	RegisterSample<sample::SampleCSM>("Cascaded Shadow Mapping");
+	RegisterSample<sample::SampleFrustumCulling>("Frustum Culling");
 }
 
 SampleMenu::~SampleMenu()

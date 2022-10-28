@@ -21,7 +21,7 @@ RenderWindow::RenderWindow(int width, int height, const char* title,
 {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	m_Window = glfwCreateWindow(width, height, title, monitor, share);
@@ -59,6 +59,10 @@ RenderWindow::RenderWindow(int width, int height, const char* title,
 		}
 		
 		render_window_init(width, height);
+
+		// Enable OpenGL Depth Test
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
 	}
 }
 
@@ -133,6 +137,10 @@ void RenderWindow::Update()
 		if (glfwGetKey(m_Window, GLFW_KEY_D) == GLFW_PRESS)
 			camera.ProcessKeyboard(CameraMovement::RIGHT, m_DeltaTime);
 	}
+
+	// Clear color buffer | depth buffer | stencil buffer
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 void RenderWindow::render_window_init(int width, int height)

@@ -225,6 +225,18 @@
     <ClCompile Include="src\windows\ImGuiGameMenu.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\samples\SampleWeightedOIT.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleSkeletalAnimation.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleCSM.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleFrustumCulling.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader.h">
@@ -1301,6 +1313,39 @@
     <ClInclude Include="src\windows\ImGuiGameMenu.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\samples\SampleWeightedOIT.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AssimpGLMHelpers.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bone.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animdata.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleSkeletalAnimation.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleCSM.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SamplePCH.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Entity.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleFrustumCulling.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.vert" />
@@ -1860,5 +1905,26 @@
     <None Include="res\shaders\breakout\PostProcessing.frag" />
     <None Include="res\shaders\breakout\Text2D.vert" />
     <None Include="res\shaders\breakout\Text2D.frag" />
+    <None Include="res\shaders\oit\Solid.vert" />
+    <None Include="res\shaders\oit\Solid.frag" />
+    <None Include="res\shaders\oit\Transparent.vert" />
+    <None Include="res\shaders\oit\Transparent.frag" />
+    <None Include="res\shaders\oit\Composite.vert" />
+    <None Include="res\shaders\oit\Composite.frag" />
+    <None Include="res\shaders\oit\Screen.vert" />
+    <None Include="res\shaders\oit\Screen.frag" />
+    <None Include="res\shaders\anim\AnimModel.vert" />
+    <None Include="res\shaders\anim\AnimModel.frag" />
+    <None Include="res\shaders\csm\ShadowMapping.vert" />
+    <None Include="res\shaders\csm\ShadowMapping.frag" />
+    <None Include="res\shaders\csm\ShadowMappingDepth.vert" />
+    <None Include="res\shaders\csm\ShadowMappingDepth.geom" />
+    <None Include="res\shaders\csm\ShadowMappingDepth.frag" />
+    <None Include="res\shaders\csm\DebugQuad.vert" />
+    <None Include="res\shaders\csm\DebugQuadDepth.frag" />
+    <None Include="res\shaders\csm\DebugCascade.vert" />
+    <None Include="res\shaders\csm\DebugCascade.frag" />
+    <None Include="res\shaders\frustumculling\ModelLoading.vert" />
+    <None Include="res\shaders\frustumculling\ModelLoading.frag" />
   </ItemGroup>
 </Project>

@@ -161,9 +161,11 @@
     <ClCompile Include="src\samples\SampleBlinnPhong.cpp" />
     <ClCompile Include="src\samples\SampleBloom.cpp" />
     <ClCompile Include="src\samples\SampleClearColor.cpp" />
+    <ClCompile Include="src\samples\SampleCSM.cpp" />
     <ClCompile Include="src\samples\SampleDeferredShading.cpp" />
     <ClCompile Include="src\samples\SampleFaceCulling.cpp" />
     <ClCompile Include="src\samples\SampleFrameBuffers.cpp" />
+    <ClCompile Include="src\samples\SampleFrustumCulling.cpp" />
     <ClCompile Include="src\samples\SampleGammaCorrection.cpp" />
     <ClCompile Include="src\samples\SampleGeometryExplode.cpp" />
     <ClCompile Include="src\samples\SampleGeometryHouse.cpp" />
@@ -180,12 +182,14 @@
     <ClCompile Include="src\samples\SamplePointShadows.cpp" />
     <ClCompile Include="src\samples\SampleRenderModel.cpp" />
     <ClCompile Include="src\samples\SampleShadowMapping.cpp" />
+    <ClCompile Include="src\samples\SampleSkeletalAnimation.cpp" />
     <ClCompile Include="src\samples\SampleSkyBox.cpp" />
     <ClCompile Include="src\samples\SampleSkyBoxNanosuit.cpp" />
     <ClCompile Include="src\samples\SampleSSAO.cpp" />
     <ClCompile Include="src\samples\SampleStencil.cpp" />
     <ClCompile Include="src\samples\SampleTextRendering.cpp" />
     <ClCompile Include="src\breakout\TextRenderer.cpp" />
+    <ClCompile Include="src\samples\SampleWeightedOIT.cpp" />
     <ClCompile Include="src\Texture2D.cpp" />
     <ClCompile Include="src\windows\ImGuiGameMenu.cpp" />
     <ClCompile Include="src\windows\ImGuiUIManager.cpp" />
@@ -214,6 +218,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="res\shaders\blending\BlendingWindow.frag" />
+    <ClInclude Include="src\Animation.h" />
+    <ClInclude Include="src\Animator.h" />
+    <ClInclude Include="src\Animdata.h" />
+    <ClInclude Include="src\AssimpGLMHelpers.h" />
+    <ClInclude Include="src\Bone.h" />
     <ClInclude Include="src\breakout\BallObjectCollisions.h" />
     <ClInclude Include="src\breakout\Game.h" />
     <ClInclude Include="src\breakout\GameLevel.h" />
@@ -224,6 +233,7 @@
     <ClInclude Include="src\breakout\ResourceManager.h" />
     <ClInclude Include="src\breakout\SpriteRenderer.h" />
     <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\Input.h" />
     <ClInclude Include="src\RenderScene.h" />
     <ClInclude Include="src\samples\SampleAdvancedGLSL.h" />
@@ -233,8 +243,10 @@
     <ClInclude Include="src\samples\SampleBlinnPhong.h" />
     <ClInclude Include="src\samples\SampleBloom.h" />
     <ClInclude Include="src\samples\SampleClearColor.h" />
+    <ClInclude Include="src\samples\SampleCSM.h" />
     <ClInclude Include="src\samples\SampleDeferredShading.h" />
     <ClInclude Include="src\samples\SampleFrameBuffers.h" />
+    <ClInclude Include="src\samples\SampleFrustumCulling.h" />
     <ClInclude Include="src\samples\SampleGammaCorrection.h" />
     <ClInclude Include="src\samples\SampleGeometryExplode.h" />
     <ClInclude Include="src\samples\SampleGeometryHouse.h" />
@@ -248,9 +260,11 @@
     <ClInclude Include="src\samples\SampleMSAA.h" />
     <ClInclude Include="src\samples\SampleNormalMapping.h" />
     <ClInclude Include="src\samples\SampleParallaxMapping.h" />
+    <ClInclude Include="src\samples\SamplePCH.h" />
     <ClInclude Include="src\samples\SamplePointShadows.h" />
     <ClInclude Include="src\samples\SampleRenderModel.h" />
     <ClInclude Include="src\samples\SampleShadowMapping.h" />
+    <ClInclude Include="src\samples\SampleSkeletalAnimation.h" />
     <ClInclude Include="src\samples\SampleSkyBox.h" />
     <ClInclude Include="src\samples\SampleSkyBoxNanosuit.h" />
     <ClInclude Include="src\samples\SampleSSAO.h" />
@@ -258,6 +272,7 @@
     <ClInclude Include="src\samples\SampleFaceCulling.h" />
     <ClInclude Include="src\samples\SampleTextRendering.h" />
     <ClInclude Include="src\breakout\TextRenderer.h" />
+    <ClInclude Include="src\samples\SampleWeightedOIT.h" />
     <ClInclude Include="src\Texture2D.h" />
     <ClInclude Include="src\windows\ImGuiGameMenu.h" />
     <ClInclude Include="src\windows\ImGuiUIManager.h" />
@@ -578,6 +593,8 @@
     <None Include="res\shaders\advancedglsl\Green.frag" />
     <None Include="res\shaders\advancedglsl\Red.frag" />
     <None Include="res\shaders\advancedglsl\Yellow.frag" />
+    <None Include="res\shaders\anim\AnimModel.frag" />
+    <None Include="res\shaders\anim\AnimModel.vert" />
     <None Include="res\shaders\Basic.frag" />
     <None Include="res\shaders\Basic.vert" />
     <None Include="res\shaders\blending\Blending.frag" />
@@ -603,6 +620,15 @@
     <None Include="res\shaders\CastLight.vert" />
     <None Include="res\shaders\CastLightView.frag" />
     <None Include="res\shaders\CastLightView.vert" />
+    <None Include="res\shaders\csm\DebugCascade.vert" />
+    <None Include="res\shaders\csm\DebugCascade.frag" />
+    <None Include="res\shaders\csm\DebugQuadDepth.frag" />
+    <None Include="res\shaders\csm\DebugQuad.vert" />
+    <None Include="res\shaders\csm\ShadowMapping.frag" />
+    <None Include="res\shaders\csm\ShadowMapping.vert" />
+    <None Include="res\shaders\csm\ShadowMappingDepth.frag" />
+    <None Include="res\shaders\csm\ShadowMappingDepth.geom" />
+    <None Include="res\shaders\csm\ShadowMappingDepth.vert" />
     <None Include="res\shaders\defer\DeferredLightBox.frag" />
     <None Include="res\shaders\defer\DeferredLightBox.vert" />
     <None Include="res\shaders\defer\DeferredShading.frag" />
@@ -619,6 +645,8 @@
     <None Include="res\shaders\framebuffers\FrameBuffersScreen.vert" />
     <None Include="res\shaders\freetype\Text.frag" />
     <None Include="res\shaders\freetype\Text.vert" />
+    <None Include="res\shaders\frustumculling\ModelLoading.frag" />
+    <None Include="res\shaders\frustumculling\ModelLoading.vert" />
     <None Include="res\shaders\gammacorrect\GammaCorrect.frag" />
     <None Include="res\shaders\gammacorrect\GammaCorrect.vert" />
     <None Include="res\shaders\geometry\Default.frag" />
@@ -683,6 +711,14 @@
     <None Include="res\shaders\Nanosuit.vert" />
     <None Include="res\shaders\normalmapping\NormalMapping.frag" />
     <None Include="res\shaders\normalmapping\NormalMapping.vert" />
+    <None Include="res\shaders\oit\Composite.frag" />
+    <None Include="res\shaders\oit\Composite.vert" />
+    <None Include="res\shaders\oit\Screen.frag" />
+    <None Include="res\shaders\oit\Screen.vert" />
+    <None Include="res\shaders\oit\Solid.frag" />
+    <None Include="res\shaders\oit\Solid.vert" />
+    <None Include="res\shaders\oit\Transparent.frag" />
+    <None Include="res\shaders\oit\Transparent.vert" />
     <None Include="res\shaders\parallaxmapping\ParallaxMapping.frag" />
     <None Include="res\shaders\parallaxmapping\ParallaxMapping.vert" />
     <None Include="res\shaders\pbrlighting\PBR.frag" />

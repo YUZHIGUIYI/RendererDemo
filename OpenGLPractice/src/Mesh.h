@@ -8,6 +8,7 @@
 #include <string>
 
 #define MAX_BONE_INFLUENCE 4
+#define MAX_BONE_WEIGHTS 100
 
 struct Vertex
 {
@@ -57,6 +58,8 @@ public:
 	inline unsigned int GetVertexArray() const { return VAO; }
 
 	inline unsigned int GetIndicesSize() const { return static_cast<unsigned int>(indices.size()); }
+
+	inline std::vector<Vertex> GetVertices() const { return vertices; }
 
 private:
 
