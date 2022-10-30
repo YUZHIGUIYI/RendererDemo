@@ -35,7 +35,10 @@ SampleMenu::SampleMenu(/*sample::Sample*& currentSamplePointer*/)
 	RegisterSample<sample::SampleWeightedOIT>("Order-Independent transparency");
 	RegisterSample<sample::SampleSkeletalAnimation>("Skeletal Animation");
 	RegisterSample<sample::SampleCSM>("Cascaded Shadow Mapping");
-	RegisterSample<sample::SampleFrustumCulling>("Frustum Culling");
+	RegisterSample<sample::SampleFrustumCulling>("Frustum Culling via BVH");
+	RegisterSample<sample::SampleRenderTerrainCPU>("Rendering Terrain via CPU");
+	RegisterSample<sample::SampleRenderTerrainGPU>("Rendering Terrain via Tessellation Shader");
+	RegisterSample<sample::SamplePhysicallyBasedBloom>("Physically Based Bloom");
 }
 
 SampleMenu::~SampleMenu()

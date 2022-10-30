@@ -85,7 +85,7 @@ namespace sample
 
 	void SampleFrustumCulling::OnImGuiRenderer()
 	{
-
+		ImGui::TextColored(ImVec4(0.9f, 0.7f, 0.6f, 1.0f), "Frustum Culling via BVH");
 	}
 
 	void SampleFrustumCulling::Init(RenderScene* scenebuffer)

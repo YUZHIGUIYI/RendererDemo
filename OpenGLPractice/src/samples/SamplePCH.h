@@ -29,5 +29,8 @@
 #include "samples/SampleSkeletalAnimation.h"
 #include "samples/SampleCSM.h"
 #include "samples/SampleFrustumCulling.h"
+#include "samples/SampleRenderTerrainCPU.h"
+#include "samples/SampleRenderTerrainGPU.h"
+#include "samples/SamplePhysicallyBasedBloom.h"
 
 #pragma once

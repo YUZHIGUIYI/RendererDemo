@@ -142,6 +142,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\bloom\BloomFBO.cpp" />
+    <ClCompile Include="src\bloom\BloomRenderer.cpp" />
     <ClCompile Include="src\breakout\BallObjectCollisions.cpp" />
     <ClCompile Include="src\breakout\Game.cpp" />
     <ClCompile Include="src\breakout\GameLevel.cpp" />
@@ -179,8 +181,11 @@
     <ClCompile Include="src\samples\SampleMSAA.cpp" />
     <ClCompile Include="src\samples\SampleNormalMapping.cpp" />
     <ClCompile Include="src\samples\SampleParallaxMapping.cpp" />
+    <ClCompile Include="src\samples\SamplePhysicallyBasedBloom.cpp" />
     <ClCompile Include="src\samples\SamplePointShadows.cpp" />
     <ClCompile Include="src\samples\SampleRenderModel.cpp" />
+    <ClCompile Include="src\samples\SampleRenderTerrainCPU.cpp" />
+    <ClCompile Include="src\samples\SampleRenderTerrainGPU.cpp" />
     <ClCompile Include="src\samples\SampleShadowMapping.cpp" />
     <ClCompile Include="src\samples\SampleSkeletalAnimation.cpp" />
     <ClCompile Include="src\samples\SampleSkyBox.cpp" />
@@ -222,6 +227,8 @@
     <ClInclude Include="src\Animator.h" />
     <ClInclude Include="src\Animdata.h" />
     <ClInclude Include="src\AssimpGLMHelpers.h" />
+    <ClInclude Include="src\bloom\BloomFBO.h" />
+    <ClInclude Include="src\bloom\BloomRenderer.h" />
     <ClInclude Include="src\Bone.h" />
     <ClInclude Include="src\breakout\BallObjectCollisions.h" />
     <ClInclude Include="src\breakout\Game.h" />
@@ -261,8 +268,11 @@
     <ClInclude Include="src\samples\SampleNormalMapping.h" />
     <ClInclude Include="src\samples\SampleParallaxMapping.h" />
     <ClInclude Include="src\samples\SamplePCH.h" />
+    <ClInclude Include="src\samples\SamplePhysicallyBasedBloom.h" />
     <ClInclude Include="src\samples\SamplePointShadows.h" />
     <ClInclude Include="src\samples\SampleRenderModel.h" />
+    <ClInclude Include="src\samples\SampleRenderTerrainCPU.h" />
+    <ClInclude Include="src\samples\SampleRenderTerrainGPU.h" />
     <ClInclude Include="src\samples\SampleShadowMapping.h" />
     <ClInclude Include="src\samples\SampleSkeletalAnimation.h" />
     <ClInclude Include="src\samples\SampleSkyBox.h" />
@@ -273,6 +283,7 @@
     <ClInclude Include="src\samples\SampleTextRendering.h" />
     <ClInclude Include="src\breakout\TextRenderer.h" />
     <ClInclude Include="src\samples\SampleWeightedOIT.h" />
+    <ClInclude Include="src\ShaderN.h" />
     <ClInclude Include="src\Texture2D.h" />
     <ClInclude Include="src\windows\ImGuiGameMenu.h" />
     <ClInclude Include="src\windows\ImGuiUIManager.h" />
@@ -723,6 +734,17 @@
     <None Include="res\shaders\parallaxmapping\ParallaxMapping.vert" />
     <None Include="res\shaders\pbrlighting\PBR.frag" />
     <None Include="res\shaders\pbrlighting\PBR.vert" />
+    <None Include="res\shaders\phybloom\Bloom.frag" />
+    <None Include="res\shaders\phybloom\Bloom.vert" />
+    <None Include="res\shaders\phybloom\BloomFinal.frag" />
+    <None Include="res\shaders\phybloom\BloomFinal.vert" />
+    <None Include="res\shaders\phybloom\Blur.frag" />
+    <None Include="res\shaders\phybloom\Blur.vert" />
+    <None Include="res\shaders\phybloom\LightBox.frag" />
+    <None Include="res\shaders\phybloom\NewDownSample.frag" />
+    <None Include="res\shaders\phybloom\NewDownSample.vert" />
+    <None Include="res\shaders\phybloom\NewUpSample.frag" />
+    <None Include="res\shaders\phybloom\NewUpSample.vert" />
     <None Include="res\shaders\pointshadows\PointShadows.frag" />
     <None Include="res\shaders\pointshadows\PointShadows.vert" />
     <None Include="res\shaders\pointshadows\PointShadowsDepth.frag" />
@@ -749,6 +771,12 @@
     <None Include="res\shaders\stencil\StencilSingleColor.frag" />
     <None Include="res\shaders\stencil\StencilTest.frag" />
     <None Include="res\shaders\stencil\StencilTest.vert" />
+    <None Include="res\shaders\terrain\CPUHeight.frag" />
+    <None Include="res\shaders\terrain\CPUHeight.vert" />
+    <None Include="res\shaders\terrain\GPUHeight.frag" />
+    <None Include="res\shaders\terrain\GPUHeight.tesc" />
+    <None Include="res\shaders\terrain\GPUHeight.tese" />
+    <None Include="res\shaders\terrain\GPUHeight.vert" />
     <None Include="src\vendor\glm\detail\func_common.inl" />
     <None Include="src\vendor\glm\detail\func_common_simd.inl" />
     <None Include="src\vendor\glm\detail\func_exponential.inl" />

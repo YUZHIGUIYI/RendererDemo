@@ -237,6 +237,21 @@
     <ClCompile Include="src\samples\SampleFrustumCulling.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\samples\SampleRenderTerrainCPU.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleRenderTerrainGPU.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SamplePhysicallyBasedBloom.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bloom\BloomFBO.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bloom\BloomRenderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader.h">
@@ -1346,6 +1361,24 @@
     <ClInclude Include="src\samples\SampleFrustumCulling.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\samples\SampleRenderTerrainCPU.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ShaderN.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleRenderTerrainGPU.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bloom\BloomFBO.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bloom\BloomRenderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SamplePhysicallyBasedBloom.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.vert" />
@@ -1926,5 +1959,22 @@
     <None Include="res\shaders\csm\DebugCascade.frag" />
     <None Include="res\shaders\frustumculling\ModelLoading.vert" />
     <None Include="res\shaders\frustumculling\ModelLoading.frag" />
+    <None Include="res\shaders\terrain\CPUHeight.vert" />
+    <None Include="res\shaders\terrain\CPUHeight.frag" />
+    <None Include="res\shaders\terrain\GPUHeight.vert" />
+    <None Include="res\shaders\terrain\GPUHeight.frag" />
+    <None Include="res\shaders\terrain\GPUHeight.tesc" />
+    <None Include="res\shaders\terrain\GPUHeight.tese" />
+    <None Include="res\shaders\phybloom\NewDownSample.vert" />
+    <None Include="res\shaders\phybloom\NewDownSample.frag" />
+    <None Include="res\shaders\phybloom\NewUpSample.vert" />
+    <None Include="res\shaders\phybloom\NewUpSample.frag" />
+    <None Include="res\shaders\phybloom\Bloom.frag" />
+    <None Include="res\shaders\phybloom\Bloom.vert" />
+    <None Include="res\shaders\phybloom\BloomFinal.frag" />
+    <None Include="res\shaders\phybloom\BloomFinal.vert" />
+    <None Include="res\shaders\phybloom\Blur.frag" />
+    <None Include="res\shaders\phybloom\Blur.vert" />
+    <None Include="res\shaders\phybloom\LightBox.frag" />
   </ItemGroup>
 </Project>
