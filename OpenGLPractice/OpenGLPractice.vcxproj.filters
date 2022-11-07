@@ -252,6 +252,12 @@
     <ClCompile Include="src\bloom\BloomRenderer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\raytracing\ComputeShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\SampleComputeShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader.h">
@@ -1379,6 +1385,12 @@
     <ClInclude Include="src\samples\SamplePhysicallyBasedBloom.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\raytracing\ComputeShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\SampleComputeShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.vert" />
@@ -1976,5 +1988,8 @@
     <None Include="res\shaders\phybloom\Blur.frag" />
     <None Include="res\shaders\phybloom\Blur.vert" />
     <None Include="res\shaders\phybloom\LightBox.frag" />
+    <None Include="res\shaders\raytracing\RayTracing.comp" />
+    <None Include="res\shaders\raytracing\ScreenQuad.vert" />
+    <None Include="res\shaders\raytracing\ScreenQuad.frag" />
   </ItemGroup>
 </Project>

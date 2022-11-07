@@ -155,6 +155,7 @@
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Input.cpp" />
+    <ClCompile Include="src\raytracing\ComputeShader.cpp" />
     <ClCompile Include="src\RenderScene.cpp" />
     <ClCompile Include="src\samples\SampleAdvancedGLSL.cpp" />
     <ClCompile Include="src\samples\SampleAsteroids.cpp" />
@@ -163,6 +164,7 @@
     <ClCompile Include="src\samples\SampleBlinnPhong.cpp" />
     <ClCompile Include="src\samples\SampleBloom.cpp" />
     <ClCompile Include="src\samples\SampleClearColor.cpp" />
+    <ClCompile Include="src\samples\SampleComputeShader.cpp" />
     <ClCompile Include="src\samples\SampleCSM.cpp" />
     <ClCompile Include="src\samples\SampleDeferredShading.cpp" />
     <ClCompile Include="src\samples\SampleFaceCulling.cpp" />
@@ -242,6 +244,7 @@
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\Input.h" />
+    <ClInclude Include="src\raytracing\ComputeShader.h" />
     <ClInclude Include="src\RenderScene.h" />
     <ClInclude Include="src\samples\SampleAdvancedGLSL.h" />
     <ClInclude Include="src\samples\SampleAsteroids.h" />
@@ -250,6 +253,7 @@
     <ClInclude Include="src\samples\SampleBlinnPhong.h" />
     <ClInclude Include="src\samples\SampleBloom.h" />
     <ClInclude Include="src\samples\SampleClearColor.h" />
+    <ClInclude Include="src\samples\SampleComputeShader.h" />
     <ClInclude Include="src\samples\SampleCSM.h" />
     <ClInclude Include="src\samples\SampleDeferredShading.h" />
     <ClInclude Include="src\samples\SampleFrameBuffers.h" />
@@ -750,6 +754,9 @@
     <None Include="res\shaders\pointshadows\PointShadowsDepth.frag" />
     <None Include="res\shaders\pointshadows\PointShadowsDepth.geom" />
     <None Include="res\shaders\pointshadows\PointShadowsDepth.vert" />
+    <None Include="res\shaders\raytracing\RayTracing.comp" />
+    <None Include="res\shaders\raytracing\ScreenQuad.frag" />
+    <None Include="res\shaders\raytracing\ScreenQuad.vert" />
     <None Include="res\shaders\shadow\DebugQuad.frag" />
     <None Include="res\shaders\shadow\DebugQuad.vert" />
     <None Include="res\shaders\shadow\ShadowMapping.frag" />

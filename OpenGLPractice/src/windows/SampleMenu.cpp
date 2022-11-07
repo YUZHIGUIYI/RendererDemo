@@ -39,6 +39,7 @@ SampleMenu::SampleMenu(/*sample::Sample*& currentSamplePointer*/)
 	RegisterSample<sample::SampleRenderTerrainCPU>("Rendering Terrain via CPU");
 	RegisterSample<sample::SampleRenderTerrainGPU>("Rendering Terrain via Tessellation Shader");
 	RegisterSample<sample::SamplePhysicallyBasedBloom>("Physically Based Bloom");
+	RegisterSample<sample::SampleComputeShader>("Compute Shader");
 }
 
 SampleMenu::~SampleMenu()

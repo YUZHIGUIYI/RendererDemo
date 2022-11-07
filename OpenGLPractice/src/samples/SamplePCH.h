@@ -32,5 +32,6 @@
 #include "samples/SampleRenderTerrainCPU.h"
 #include "samples/SampleRenderTerrainGPU.h"
 #include "samples/SamplePhysicallyBasedBloom.h"
+#include "samples/SampleComputeShader.h"
 
 #pragma once
