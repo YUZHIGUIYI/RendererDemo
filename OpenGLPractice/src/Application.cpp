@@ -2,6 +2,7 @@
 #include "windows/ImGuiUIManager.h"
 #include "windows/SampleMenu.h"
 #include "windows/ImGuiGameMenu.h"
+#include "windows/ImGuiRayTracerMenu.h"
 #include "Input.h"
 #include "Log.h"
 
@@ -26,6 +27,9 @@ int main()
 
 	std::unique_ptr<ImGuiGameMenu> gameMenu = std::make_unique<ImGuiGameMenu>();
 	UIManager.AddWindow(std::move(gameMenu));
+
+	std::unique_ptr<ImGuiRayTracerMenu> raytracerMenu = std::make_unique<ImGuiRayTracerMenu>();
+	UIManager.AddWindow(std::move(raytracerMenu));
 
 	// Render cycle
 	while (!renderwindow.RenderWindowShouldClose())

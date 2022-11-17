@@ -156,6 +156,7 @@
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\raytracing\ComputeShader.cpp" />
+    <ClCompile Include="src\raytracing\RayTracing.cpp" />
     <ClCompile Include="src\RenderScene.cpp" />
     <ClCompile Include="src\samples\SampleAdvancedGLSL.cpp" />
     <ClCompile Include="src\samples\SampleAsteroids.cpp" />
@@ -199,6 +200,7 @@
     <ClCompile Include="src\samples\SampleWeightedOIT.cpp" />
     <ClCompile Include="src\Texture2D.cpp" />
     <ClCompile Include="src\windows\ImGuiGameMenu.cpp" />
+    <ClCompile Include="src\windows\ImGuiRayTracerMenu.cpp" />
     <ClCompile Include="src\windows\ImGuiUIManager.cpp" />
     <ClCompile Include="src\windows\ImGuiWindowBase.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />
@@ -243,8 +245,10 @@
     <ClInclude Include="src\breakout\SpriteRenderer.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Entity.h" />
+    <ClInclude Include="src\Geometry.h" />
     <ClInclude Include="src\Input.h" />
     <ClInclude Include="src\raytracing\ComputeShader.h" />
+    <ClInclude Include="src\raytracing\RayTracing.h" />
     <ClInclude Include="src\RenderScene.h" />
     <ClInclude Include="src\samples\SampleAdvancedGLSL.h" />
     <ClInclude Include="src\samples\SampleAsteroids.h" />
@@ -290,6 +294,7 @@
     <ClInclude Include="src\ShaderN.h" />
     <ClInclude Include="src\Texture2D.h" />
     <ClInclude Include="src\windows\ImGuiGameMenu.h" />
+    <ClInclude Include="src\windows\ImGuiRayTracerMenu.h" />
     <ClInclude Include="src\windows\ImGuiUIManager.h" />
     <ClInclude Include="src\windows\ImGuiWindowBase.h" />
     <ClInclude Include="src\IndexBuffer.h" />
@@ -603,6 +608,7 @@
     <ClInclude Include="src\windows\SampleMenu.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="D:\gpu-path-tracer\bin\Debug\shader\path_tracer_cs.glsl" />
     <None Include="res\shaders\advancedglsl\AdvancedGLSL.vert" />
     <None Include="res\shaders\advancedglsl\Blue.frag" />
     <None Include="res\shaders\advancedglsl\Green.frag" />
@@ -754,7 +760,11 @@
     <None Include="res\shaders\pointshadows\PointShadowsDepth.frag" />
     <None Include="res\shaders\pointshadows\PointShadowsDepth.geom" />
     <None Include="res\shaders\pointshadows\PointShadowsDepth.vert" />
+    <None Include="res\shaders\raytracing\PathTracing.comp" />
+    <None Include="res\shaders\raytracing\Rand.glsl" />
     <None Include="res\shaders\raytracing\RayTracing.comp" />
+    <None Include="res\shaders\raytracing\RayTracingTwo.comp" />
+    <None Include="res\shaders\raytracing\Samples.glsl" />
     <None Include="res\shaders\raytracing\ScreenQuad.frag" />
     <None Include="res\shaders\raytracing\ScreenQuad.vert" />
     <None Include="res\shaders\shadow\DebugQuad.frag" />

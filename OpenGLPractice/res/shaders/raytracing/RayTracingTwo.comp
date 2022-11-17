@@ -1,0 +1,379 @@
+#version 460 core
+layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout(rgba32f, binding = 0) uniform image2D imgOutput;
+
+const float PHI = 1.61803398874989484820459; // * 00000.1;	// Golden Ratio;
+const float PI = 3.14159265358979323846264; // * 00000.1;	// PI
+const float SQ2 = 1.41421356237309504880169; // * 10000.0;	// Squre Root of Two
+
+const int MIN = -2147483648;
+const int MAX = 2147483647;
+
+uint gState = 123;	// global state for random
+
+const int cosSamples = 64;
+
+// ---------------------------------------------------------------
+uint randbit(inout uint state)
+{
+    uint x = state;
+    x ^= x << 13;
+    x ^= x >> 17;
+    x ^= x << 15;
+    state = x;
+    return x;
+}
+
+// return 0-1
+float rand(inout uint state)
+{
+    return float(randbit(state) & uint(0xFFFFFF)) / 16777216.0f;
+}
+
+// A single iteration of Bob Jenkins' One-At-A-Time hashing algorithm.
+uint hash(uint x) 
+{
+    x += (x << 10u);
+    x ^= (x >> 6u);
+    x += (x << 3u);
+    x ^= (x >> 11u);
+    x += (x << 15u);
+    return x;
+}
+
+// Compound versions of the hashing algorithm I whipped together.
+uint hash(uvec2 v) { return hash(v.x ^ hash(v.y)); }
+uint hash(uvec3 v) { return hash(v.x ^ hash(v.y) ^ hash(v.z)); }
+uint hash(uvec4 v) { return hash(v.x ^ hash(v.y) ^ hash(v.z) ^ hash(v.w)); }
+
+// Construct a float with half-open range [0:1] using low 23 bits.
+// All zeroes yields 0.0, all ones yields the next smallest representable value below 1.0.
+float floatConstruct(uint m) 
+{
+    const uint ieeeMantissa = 0x007FFFFFu; // binary32 mantissa bitmask
+    const uint ieeeOne = 0x3F800000u; // 1.0 in IEEE binary32
+
+    m &= ieeeMantissa;                     // Keep only mantissa bits (fractional part)
+    m |= ieeeOne;                          // Add fractional part to 1.0
+
+    float  f = uintBitsToFloat(m);       // Range [1:2]
+    return f - 1.0;                        // Range [0:1]
+}
+
+// Pseudo-random value in half-open range [0:1].
+float random(float x) { return floatConstruct(hash(floatBitsToUint(x))); }
+float random(vec2  v) { return floatConstruct(hash(floatBitsToUint(v))); }
+float random(vec3  v) { return floatConstruct(hash(floatBitsToUint(v))); }
+float random(vec4  v) { return floatConstruct(hash(floatBitsToUint(v))); }
+
+float gold_noise(in vec2 xy, in float seed) 
+{
+    return fract(tan(distance(xy * PHI, xy) * seed) * xy.x);
+}
+// ---------------------------------------------------------------
+
+// ---------------------------------------------------------------
+vec2 unit_squre_sample(float i)
+{
+	/*uint sx = i + 152;
+	uint sy = i * 100 + 317;
+	return vec2(rand(sx), rand(sy));*/
+	float x = random(i + 10);
+	float y = random(i + 10000);
+	return vec2(x, y);
+}
+
+vec3 unit_sphere_sample(inout uint state)
+{
+    float d, x, y, z;
+    do 
+    {
+        x = rand(state) * 2.0 - 1.0;
+        state += 1;
+        y = rand(state) * 2.0 - 1.0;
+        state += 3;
+        z = rand(state) * 2.0 - 1.0;
+        d = x * x + y * y + z * z;
+    } while (d > 1.0);
+
+    return vec3(x, y, z);
+}
+
+// Xi should use unit_square_sample() get
+vec3 cos_weighted_hemisphere(vec2 Xi, float e) 
+{
+    float cos_phi = cos(2.0f * PI * Xi.x);
+    float sin_phi = sin(2.0f * PI * Xi.x);
+
+    float cos_theta = pow((1.0f - Xi.y), 1.0f / (e + 1.0));
+    float sin_theta = sqrt(1.0f - cos_theta * cos_theta);
+
+    // Generation Z based sphere
+    float pu = sin_theta * cos_phi;
+    float pv = sin_theta * sin_phi;
+    float pw = cos_theta;
+    vec3 H = vec3(pu, pv, pw);
+    return H;
+}
+
+// align the input vector to Normal
+vec3 sample_on_normal(vec3 inputSample, vec3 N) 
+{
+    // from tangent-space vector to world-space sample vector
+    //vec3  up        = abs(N.z) < 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
+    vec3 up = vec3(0.000001f, 1.0, 0);
+    up = normalize(up);
+    vec3 tangent = normalize(cross(up, N));
+    vec3 bitangent = cross(N, tangent);
+    bitangent = normalize(bitangent);
+    vec3 sampleVec = tangent * inputSample.x + bitangent * inputSample.y + N * inputSample.z;
+    sampleVec = normalize(sampleVec);
+    return sampleVec;
+}
+// ---------------------------------------------------------------
+
+
+struct Ray
+{
+	vec3 o;
+	vec3 d;
+};
+
+struct Sphere
+{
+	vec3 c;
+	float r;
+	vec3 Cd;
+};
+
+struct Plane
+{
+	vec3 P;
+	vec3 N;
+	vec3 Cd;
+};
+
+struct RayHit
+{
+	vec3 hitP;
+	vec3 hitN;
+	float t;	// o + td
+	vec3 hitCd;
+};
+
+float rand(float n)
+{
+	return fract(sin(n) * 43758.5453123);
+}
+
+struct Scene
+{
+	Sphere spheres[3];
+	Plane plane;
+};
+
+bool raySphere(inout Ray ray, inout Sphere sphere, float tmin, float tmax, inout RayHit hitRecord)
+{
+	vec3 oc = ray.o - sphere.c;
+	float a = dot(ray.d, ray.d);
+	float half_b = dot(oc, ray.d);
+	float c = dot(oc, oc) - sphere.r * sphere.r;
+	float discriminant = half_b * half_b - a * c;
+
+	if (discriminant > 0)
+	{
+		float root = sqrt(discriminant);
+		float temp = (-half_b - root) / a;
+
+		if (temp < tmax && temp > tmin)
+		{
+			hitRecord.t = float(temp);
+			hitRecord.hitP = ray.o + hitRecord.t * ray.d;
+			hitRecord.hitN = (hitRecord.hitP - sphere.c) / sphere.r;
+			hitRecord.hitCd = sphere.Cd;
+			return true;
+		}
+
+		temp = (-half_b + root) / a;
+		if (temp < tmax && temp > tmin)
+		{
+			hitRecord.t = float(temp);
+			hitRecord.hitP = ray.o + hitRecord.t * ray.d;
+			hitRecord.hitN = (hitRecord.hitP - sphere.c) / sphere.r;
+			hitRecord.hitCd = sphere.Cd;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool rayPlane(inout Ray ray, inout Plane plane, float tmin, float tmax, inout RayHit hitRecord)
+{
+	vec3 n = normalize(plane.N);
+	float denom = dot(ray.d, n);
+	float t = dot((plane.P - ray.o), n) / denom;
+	if (t > tmin && t < tmax)
+	{
+		hitRecord.t = t;
+		hitRecord.hitP = ray.o + t * ray.d;
+		hitRecord.hitN = plane.N;
+		hitRecord.hitCd = plane.Cd;
+		return true;
+	}
+	return false;
+}
+
+bool worldHit(inout Ray ray,  inout Scene scene, float tmin, float tmax, inout RayHit rec)
+{
+	bool hit_anything = false;
+	float close_so_far = tmax;
+
+	// raytracing plane
+	RayHit temp_rec;
+	if (rayPlane(ray, scene.plane, tmin, close_so_far, temp_rec))
+	{
+		hit_anything = true;
+		close_so_far = temp_rec.t;
+		rec = temp_rec;
+	}
+
+	// raytracing spheres
+	for (int i = 0; i < 3; ++i)
+	{
+		if (raySphere(ray, scene.spheres[i], tmin, close_so_far, temp_rec))
+		{
+			hit_anything = true;
+			close_so_far = temp_rec.t;
+			rec = temp_rec;
+		}
+	}
+
+	return hit_anything;
+}
+
+vec3 color(inout Ray ray, inout Scene scene)
+{
+	vec3 unit_direction = ray.d;
+	float t = 0.5 * (unit_direction.y + 1.0);
+	vec3 background = (1.0 - t) * vec3(1.0, 1.0, 1.0) + t * vec3(0.5, 0.7, 1.0);
+
+	float bias = 0.0001f;
+	float tmax= 34132145;	// default very far scene
+	float tmin = 0.000001f;
+
+	RayHit record;
+	if (worldHit(ray, scene, tmin, tmax, record))
+	{
+		vec3 cos_weighted_L = vec3(0.0);
+		for (int i = 0; i < cosSamples; ++i)
+		{
+			gState += i;
+			float x = rand(gState);
+			gState += i;
+			float y = rand(gState);
+
+			vec2 Xi = vec2(x, y);
+			float cosWeight = 0.001f;
+			vec3 zHemisphere  = cos_weighted_hemisphere(Xi, cosWeight);
+			vec3 hemisphere = zHemisphere;
+			vec3 dir = sample_on_normal(hemisphere, record.hitN);
+			// next ray tracing
+			Ray tempRay;
+			tempRay.o = record.hitP + record.hitN * bias;
+			tempRay.d = normalize(dir);
+
+			RayHit newRec;
+			if (worldHit(tempRay, scene, tmin, tmax, newRec))
+			{
+				cos_weighted_L += vec3(0.0);	// in shadow hit
+			}
+			else 
+			{
+				cos_weighted_L += background;	// background color
+			}
+		}
+		cos_weighted_L /= float(cosSamples);
+		cos_weighted_L *= record.hitCd;
+		return cos_weighted_L;
+	}
+	else 
+	{
+		return background;
+	}
+}
+
+void main()
+{
+	const float pixelSize = 1.0f;
+	ivec2 texSize = imageSize(imgOutput);	// get current texture size, width x height
+
+	// base pixel color for image
+	vec4 pixel = vec4(0.0, 0.0, 0.0, 1.0);
+	// get index in global work group i.e x, y position
+	ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
+
+	// interesting stuff happens here later
+
+	gState = gl_GlobalInvocationID.x * 1973 + gl_GlobalInvocationID.y * 9277 + 2699 | 1;
+
+	// scene objs
+	Sphere sphere1;
+    sphere1.c = vec3(0.0, 0.0, -1.0);
+    sphere1.r = 0.5;
+	sphere1.Cd = vec3(1.0, 0.0, 0.0);
+
+	Sphere sphere2;
+    sphere2.c = vec3(-1.1, 0, -1.0);
+    sphere2.r = 0.5;
+    sphere2.Cd = vec3(0.0, 1.0, 0.0);
+
+	Sphere sphere3;
+    sphere3.c = vec3(1.1, 0.0, -1.0);
+    sphere3.r = 0.5;
+    sphere3.Cd = vec3(0.0, 0.0, 1.0);
+
+    Plane plane1;
+    plane1.P = vec3(0.0, -0.49, 0.0);
+    plane1.N = vec3(0.0, 1.0, 0.0);
+	plane1.Cd = vec3(1.0, 1.0, 1.0);
+
+	Scene scene;
+	scene.plane = plane1;
+	scene.spheres[0] = sphere1;
+	scene.spheres[1] = sphere2;
+	scene.spheres[2] = sphere3;
+	
+	int samples = 6;
+	for (int i = 0; i < samples; ++i)
+	{
+		// Keep 1:1 aspect, that is a square image
+		float ox = 0.0f;
+		float oy = 0.0f;
+
+		ox = rand(gState);
+		oy = rand(gState);
+
+		float x = pixelSize * (float(pixelCoords.x) - 0.5f * float(texSize.x - 1.0f) + ox);
+		float y = pixelSize * (float(pixelCoords.y) - 0.5f * float(texSize.y - 1.0f) + oy);
+
+		float aspect = float(texSize.y) / float(texSize.x);
+
+		x /= float(texSize.x) / 4.0f;
+		y /= float(texSize.y) / 4.0f;
+
+		x /= aspect;
+
+		// define the ray
+		Ray ray;
+		ray.o = vec3(0.0, 0.0, 10.0f);
+		ray.d = vec3(x, y, 0.0) - ray.o;
+		ray.d = normalize(ray.d);
+
+		pixel.rgb += color(ray, scene);
+	}
+
+	pixel.rgb /= float(samples);
+
+	// output to a specific pixel in the image
+	imageStore(imgOutput, pixelCoords, pixel);
+}

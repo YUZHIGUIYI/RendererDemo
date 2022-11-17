@@ -68,6 +68,7 @@ void ImGuiUIManager::Begin(const Camera& camera, RenderScene* scenebuffer)
 	ImGui::ShowDemoWindow(&show);
 
 	// Show Windows component
+
 	UpdateWindows(camera, scenebuffer);
 }
 
@@ -108,7 +109,6 @@ void ImGuiUIManager::SetStyle()
 void ImGuiUIManager::UpdateWindows(const Camera& camera, RenderScene* scenebuffer)
 {
 	static bool sceneshow = true;
-	//scenebuffer->Bind();
 
 	for (size_t i = 0; i < m_Windows.size(); ++i)
 	{
@@ -130,8 +130,6 @@ void ImGuiUIManager::UpdateWindows(const Camera& camera, RenderScene* scenebuffe
 	}
 	ImGui::End();
 	ImGui::PopStyleVar();
-
-	//scenebuffer->Unbind();
 }
 
 void ImGuiUIManager::DeleteWindows()

@@ -1,9 +1,13 @@
 # RendererDemo
-- A Renderer Demo Based On OpenGL
+- A Renderer Demo Based On OpenGL API
 - Personal Practice
+- References
+    - Learn OpenGL: https://learnopengl.com/
+    - GPU-Path-Tracer: https://github.com/diharaw/gpu-path-tracer
 # Preview
+## Rasterization
 - RenderDemo Preview
-![Interface Display](./Preview/RenderDemoPreviewM.png)
+![Interface Display](./Preview/RenderDemoPreviewN.png)
 - Model in Sky Box
 ![Rendering Imported Model](./Preview/NanoSuitInSkyBoxDocking.png)
 - Blending Rendering
@@ -23,8 +27,11 @@
 - Cascaded Shadow Mapping
 ![CascadedShadowMapping](./Preview/CascadedShadowMapping.png)
 - Frustum Culling via BVH
-![](./Preview/FrustumCulling.png)
+![FrustumCulling](./Preview/FrustumCulling.png)
 - Rendering Terrain via Tessellation Shader
-![](./Preview/RenderTerrainViaTessellationShader.png)
+![RenderingTerrain](./Preview/RenderTerrainViaTessellationShader.png)
 - Physically Based Bloom
-![](./Preview/PhysicallyBasedBloom.png)
+![PhysicallyBasedBloom](./Preview/PhysicallyBasedBloom.png)
+## Ray Tracing
+- Path Tracing
+![PathTracing](./Preview/PathTracing.png)

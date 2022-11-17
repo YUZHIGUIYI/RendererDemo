@@ -258,6 +258,12 @@
     <ClCompile Include="src\samples\SampleComputeShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\raytracing\RayTracing.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windows\ImGuiRayTracerMenu.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader.h">
@@ -1391,6 +1397,15 @@
     <ClInclude Include="src\samples\SampleComputeShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\raytracing\RayTracing.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windows\ImGuiRayTracerMenu.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Geometry.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.vert" />
@@ -1991,5 +2006,10 @@
     <None Include="res\shaders\raytracing\RayTracing.comp" />
     <None Include="res\shaders\raytracing\ScreenQuad.vert" />
     <None Include="res\shaders\raytracing\ScreenQuad.frag" />
+    <None Include="res\shaders\raytracing\RayTracingTwo.comp" />
+    <None Include="res\shaders\raytracing\Samples.glsl" />
+    <None Include="res\shaders\raytracing\Rand.glsl" />
+    <None Include="res\shaders\raytracing\PathTracing.comp" />
+    <None Include="D:\gpu-path-tracer\bin\Debug\shader\path_tracer_cs.glsl" />
   </ItemGroup>
 </Project>
