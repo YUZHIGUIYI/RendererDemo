@@ -4,20 +4,20 @@ namespace Renderer
 {
 	using double_ms = std::chrono::duration<double, std::milli>;
 
+	std::chrono::steady_clock::time_point Input::s_StartTimePoint;
+
 	std::unique_ptr<Renderer::Input> Input::s_Instance;
 
 	Renderer::RENDERERMODE Input::RendererMode;
 
 	bool Input::KeysProcessed[1024];
 
-	float Input::DeltaTime = 0.0f;
-	double Input::s_DeltaTime = 0.0;
-
-	std::chrono::steady_clock::time_point Input::s_StartTimePoint;
-
 	bool Input::Keys[1024];
 
 	bool Input::MouseButtons[5];
+
+	float Input::DeltaTime = 0.0f;
+	double Input::s_DeltaTime = 0.0;
 
 	void Input::Init()
 	{

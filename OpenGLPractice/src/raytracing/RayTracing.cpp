@@ -4,7 +4,7 @@ namespace RayTracer
 {
 
 	RayTracing::RayTracing()
-		: quadVAO(0), quadVBO(0), Width(800), Height(600), Done(false)
+		: quadVAO(0), quadVBO(0), Width(800), Height(600), m_NumFrames(0), Done(false)
 	{
 	}
 

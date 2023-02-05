@@ -155,7 +155,8 @@ void RenderWindow::Update()
 
 	m_Lastx = m_Currentx;
 	m_Lasty = m_Currenty;
-	if (Renderer::Input::RendererMode == Renderer::RENDERERMODE::SAMPLE_MODE)
+	if (Renderer::Input::RendererMode == Renderer::RENDERERMODE::SAMPLE_MODE || 
+		Renderer::Input::RendererMode == Renderer::RENDERERMODE::RENDER_MODE)
 	{
 		CheckCameraMovement();
 		UpdateCamera();

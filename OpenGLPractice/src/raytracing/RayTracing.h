@@ -13,7 +13,7 @@ namespace RayTracer
 	private:
 		float m_AspectRatio;
 		glm::vec2 m_Resolution;
-		int m_NumFrames{ 0 };
+		int m_NumFrames;
 
 		unsigned int quadVAO, quadVBO;
 		unsigned int rayTexture;

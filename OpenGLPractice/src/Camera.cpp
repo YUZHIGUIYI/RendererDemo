@@ -52,7 +52,7 @@ Camera::~Camera()
 
 glm::mat4 Camera::GetViewMatrix() const
 {
-	//return glm::lookAt(Position, Position + Front, Up);
+	//return glm::lookAt(Position, Position + Front, Up);	// has been discarded
 	return View;
 }
 
@@ -77,12 +77,13 @@ void Camera::ProcessKeyboard(CameraMovement direction, float deltaTime)
 	default:
 		break;
 	}
-	// ½ûÖ¹·ÉÐÐ
+	// prohibit fly
 	//Position.y = 0.0f;
 }
 
 void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch /*= true*/)
 {
+	// has been discarded
 	xoffset *= MouseSensitivity;
 	yoffset *= MouseSensitivity;
 
@@ -143,7 +144,7 @@ void Camera::UpdateCameraVectors()
 	//Right = glm::normalize(glm::cross(Front, WorldUp));
 	//Up = glm::normalize(glm::cross(Right, Front));
 
-	// new via quat
+	// new method via quaternion
 	glm::quat qPitch = glm::angleAxis(Pitch, glm::vec3(1.0f, 0.0f, 0.0f));
 	glm::quat qYaw = glm::angleAxis(Yaw, glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::quat qRoll = glm::angleAxis(Roll, glm::vec3(0.0f, 0.0f, 1.0f));

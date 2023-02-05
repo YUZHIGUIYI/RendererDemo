@@ -34,7 +34,7 @@ void ImGuiRayTracerMenu::Update(const Camera& camera, RenderScene* scenebuffer)
 				{
 					rayTracingSample = std::make_unique<RayTracer::RayTracing>();
 					rayTracingSample->Init();
-					Renderer::Input::RendererMode = Renderer::RENDERERMODE::SAMPLE_MODE;
+					Renderer::Input::RendererMode = Renderer::RENDERERMODE::RENDER_MODE;
 					RD_WARN("Start Ray Tracer");
 				}
 			}
